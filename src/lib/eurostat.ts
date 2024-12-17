@@ -51,7 +51,7 @@ export async function getGDPGrowth() {
     .flatMap((result: unknown[]) => {
       const gdp = result.at(-1);
       const year = result.at(-2);
-      return gdp != null ? [{ gdp, year }] : [];
+      return !gdp ? [] : [{ gdp, year }];
     });
 
   return data as GDPGrowth[];
@@ -81,7 +81,7 @@ export async function getUnemployment() {
     .flatMap((result: unknown[]) => {
       const unemployment = result.at(-1);
       const year = result.at(-2);
-      return unemployment != null ? [{ unemployment, year }] : [];
+      return !unemployment ? [] : [{ unemployment, year }];
     });
 
   return data as Unemployment[];
@@ -108,7 +108,7 @@ export async function getPopulationGrowth() {
     .flatMap((result: unknown[]) => {
       const growth = result.at(-1);
       const year = result.at(-2);
-      return growth != null ? [{ growth, year }] : [];
+      return !growth ? [] : [{ growth, year }];
     });
 
   return data as PopulationGrowth[];
@@ -134,8 +134,95 @@ export async function getDeaths() {
     .flatMap((result: unknown[]) => {
       const deaths = result.at(-1);
       const year = result.at(-2);
-      return deaths != null ? [{ deaths: Number(deaths), year }] : [];
+      return !deaths ? [] : [{ deaths: Number(deaths), year }];
     });
 
   return data as Deaths[];
+}
+
+type Population = {
+  population: number;
+  year: string;
+};
+
+export async function getPopulation() {
+  const dataSetCode = "demo_gind";
+  const params = new URLSearchParams({
+    geo: "EU27_2020",
+    indic_de: "AVG",
+    lang: "en",
+  });
+
+  const url = `${HOST}/${dataSetCode}?${params.toString()}`;
+  const jst = await JSONstat(url);
+  const data = jst
+    .Dataset(0)
+    .toTable()
+    .flatMap((result: unknown[]) => {
+      const population = result.at(-1);
+      const year = result.at(-2);
+      return !population ? [] : [{ population, year }];
+    });
+
+  return data as Population[];
+}
+
+type HousePriceIndex = {
+  price: number;
+  year: string;
+};
+
+export async function getHousePriceIndex() {
+  const dataSetCode = "prc_hpi_q";
+  const params = new URLSearchParams({
+    geo: "EU",
+    purchase: "TOTAL",
+  });
+
+  const url = `${HOST}/${dataSetCode}?${params.toString()}`;
+  const jst = await JSONstat(url);
+  const data = jst
+    .Dataset(0)
+    .toTable()
+    .flatMap((result: unknown[]) => {
+      const price = result.at(-1);
+      const year = result.at(-2);
+      return !price || Number(price) < 50 ? [] : [{ price, year }];
+    })
+    .sort((a: HousePriceIndex, b: HousePriceIndex) =>
+      a.year.localeCompare(b.year),
+    );
+
+  return data;
+}
+
+type CrimeRate = {
+  crimeRate: number;
+  year: string;
+};
+
+export async function getCrimeRate() {
+  // https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/ilc_mddw03?format=JSON&geo=EU&unit=PC&hhtyp=TOTAL&incgrp=TOTAL&lang=en
+  const dataSetCode = "ilc_mddw03";
+  const params = new URLSearchParams({
+    geo: "EU",
+    unit: "PC",
+    hhtyp: "TOTAL",
+    incgrp: "TOTAL",
+    lang: "en",
+  });
+
+  const url = `${HOST}/${dataSetCode}?${params.toString()}`;
+  const jst = await JSONstat(url);
+  const data = jst
+    .Dataset(0)
+    .toTable()
+    .flatMap((result: unknown[]) => {
+      const crimeRate = result.at(-1);
+      const year = result.at(-2);
+      return !crimeRate ? [] : [{ crimeRate, year }];
+    });
+
+  console.dir(data, { depth: null });
+  return data as CrimeRate[];
 }

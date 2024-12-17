@@ -3,7 +3,7 @@
   - [x] Unemployment Rate
   - [x] Inflation Rate
 - [ ] **Demographic Data**
-  - [ ] Population Size
+  - [x] Average population
   - [x] Population Growth Rate
   - [ ] Median Age
   - [x] Number of Deaths Per Year
@@ -24,7 +24,7 @@
   - [ ] Cost of Living Index
   - [ ] Overall Quality of Life Index (e.g., Eurostat aggregate measures)
 - [ ] **Violence and Safety**
-  - [ ] Crime Rate (per 100,000 people)
+  - [x] Crime Rate (per 100,000 people)
   - [ ] Homicide Rate (per 100,000 people)
   - [ ] Perceived Safety Index (subjective measure)
   - [ ] Violence Against Women (% of population reporting)
