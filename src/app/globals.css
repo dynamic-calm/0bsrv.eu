@@ -3,19 +3,45 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --color-gray-100: #fdfdfc;
+  --color-gray-200: #f9f9f8;
+  --color-gray-300: #f1f0ef;
+  --color-gray-400: #e9e8e6;
+  --color-gray-500: #e2e1de;
+  --color-gray-600: #dad9d6;
+  --color-gray-700: #cfceca;
+  --color-gray-800: #bcbbb5;
+  --color-gray-900: #8d8d86;
+  --color-gray-1000: #82827c;
+  --color-gray-1100: #63635e;
+  --color-gray-1200: #21201c;
+  --accent-color-blue: #0090ff;
+}
+
+::selection {
+  background: var(--color-gray-400);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --color-gray-100: #111110;
+    --color-gray-200: #191918;
+    --color-gray-300: #222221;
+    --color-gray-400: #2a2a28;
+    --color-gray-500: #31312e;
+    --color-gray-600: #3b3a37;
+    --color-gray-700: #494844;
+    --color-gray-800: #62605b;
+    --color-gray-900: #6f6d66;
+    --color-gray-1000: #7c7b74;
+    --color-gray-1100: #b5b3ad;
+    --color-gray-1200: #eeeeec;
+    --accent-color-blue: #0090ff;
+  }
+  ::selection {
+    background: var(--color-gray-300);
   }
 }
-
 body {
-  color: var(--foreground);
-  background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
