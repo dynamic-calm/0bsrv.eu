@@ -1,84 +1,104 @@
 import MyLineChart from "@/app/components/line-chart";
-import { getInflation } from "@/lib/eurostat";
+import {
+  getDeaths,
+  getGDPGrowth,
+  getInflation,
+  getPopulationGrowth,
+  getUnemployment,
+} from "@/lib/eurostat";
+import { Suspense } from "react";
+import { ChartLoader } from "@/app/components/chart-loader";
+import { Box } from "@/app/components/box";
 
-const data = [
-  {
-    name: "Page A",
-    uv: 4000,
-    pv: 2400,
-    amt: 2400,
-  },
-  {
-    name: "Page B",
-    uv: 3000,
-    pv: 1398,
-    amt: 2210,
-  },
-  {
-    name: "Page C",
-    uv: 2000,
-    pv: 9800,
-    amt: 2290,
-  },
-  {
-    name: "Page D",
-    uv: 2780,
-    pv: 3908,
-    amt: 2000,
-  },
-  {
-    name: "Page E",
-    uv: 1890,
-    pv: 4800,
-    amt: 2181,
-  },
-  {
-    name: "Page F",
-    uv: 2390,
-    pv: 3800,
-    amt: 2500,
-  },
-  {
-    name: "Page G",
-    uv: 3490,
-    pv: 4300,
-    amt: 2100,
-  },
-];
-
-export default async function Home() {
-  const data = await getInflation();
+export default function Home() {
   return (
     <main className="mx-auto min-h-screen w-full p-2">
       <div className="grid h-full w-full grid-cols-3 gap-2">
-        <div className="col-span-3 flex h-28 w-full gap-2">
-          {new Array(4).fill(0).map((_, i) => (
-            <div
-              key={i}
-              className="flex w-full items-center justify-center rounded-sm border border-gray-600 font-mono text-5xl"
-            >
-              {Intl.NumberFormat("en-US").format(
-                Math.floor(Math.random() * 3000),
-              )}
-            </div>
-          ))}
+        <Suspense fallback={<ChartLoader label="Inflation" />}>
+          <Inflation />
+        </Suspense>
+        <Suspense fallback={<ChartLoader label="GDP Growth" />}>
+          <GDPGrowth />
+        </Suspense>
+        <Suspense fallback={<ChartLoader label="Unemployment" />}>
+          <Unemployment />
+        </Suspense>
+        <div className="col-span-full mt-4 text-lg font-semibold tracking-tight">
+          Demographic Data
         </div>
-        {new Array(10).fill(0).map((_, i) => (
-          <div className="h-64 w-full rounded-sm border border-gray-600 font-mono text-xs">
-            <div className="flex h-8 w-full items-center justify-center border-b border-neutral-700">
-              <span className="block font-sans text-sm font-semibold">
-                Inflation
-              </span>
-            </div>
-            <MyLineChart
-              key={i}
-              data={data}
-              XAxisKey="year"
-              LineKey="inflation"
-            />
-          </div>
-        ))}
+        <Suspense fallback={<ChartLoader label="Population Growth" />}>
+          <PopulationGrowth />
+        </Suspense>
+        <Suspense fallback={<ChartLoader label="Female and Male Birth Rate" />}>
+          <FemaleAndMaleBirthRate />
+        </Suspense>
       </div>
     </main>
+  );
+}
+
+async function Inflation() {
+  const inflation = await getInflation();
+  return (
+    <Box label="Inflation">
+      <MyLineChart
+        data={inflation}
+        xAxisKey="year"
+        lineKey="inflation"
+        unit="percent"
+      />
+    </Box>
+  );
+}
+
+async function GDPGrowth() {
+  const gdp = await getGDPGrowth();
+  return (
+    <Box label="GDP Growth">
+      <MyLineChart data={gdp} xAxisKey="year" lineKey="gdp" unit="percent" />
+    </Box>
+  );
+}
+
+async function Unemployment() {
+  const unemployment = await getUnemployment();
+  return (
+    <Box label="Unemployment">
+      <MyLineChart
+        data={unemployment}
+        xAxisKey="year"
+        lineKey="unemployment"
+        unit="percent"
+      />
+    </Box>
+  );
+}
+
+async function PopulationGrowth() {
+  const populationGrowth = await getPopulationGrowth();
+  return (
+    <Box label="Population Growth">
+      <MyLineChart
+        data={populationGrowth}
+        xAxisKey="year"
+        lineKey="growth"
+        unit="percent"
+      />
+    </Box>
+  );
+}
+
+async function FemaleAndMaleBirthRate() {
+  const deaths = await getDeaths();
+  return (
+    <Box label="Number of Deaths Per Year">
+      <MyLineChart
+        data={deaths}
+        xAxisKey="year"
+        lineKey="deaths"
+        unit="count"
+        tickFormatter="millions"
+      />
+    </Box>
   );
 }

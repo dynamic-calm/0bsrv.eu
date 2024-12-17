@@ -1,0 +1,31 @@
+- [x] **Economic Indicators**
+  - [x] GDP
+  - [x] Unemployment Rate
+  - [x] Inflation Rate
+- [ ] **Demographic Data**
+  - [ ] Population Size
+  - [x] Population Growth Rate
+  - [ ] Median Age
+  - [x] Number of Deaths Per Year
+- [ ] **Environmental Data**
+  - [ ] CO₂ Emissions per capita
+  - [ ] Renewable Energy Share (%)
+  - [ ] Waste Recycling Rate (%)
+  - [ ] Air Quality Index (AQI)
+- [ ] **Social Indicators**
+  - [ ] Life Expectancy
+  - [ ] Education Levels (% with higher education)
+  - [ ] Employment by Sector (Agriculture, Industry, Services)
+  - [ ] Internet Penetration Rate (%)
+- [ ] **Quality of Living**
+  - [ ] Housing Affordability (Rent-to-Income Ratio)
+  - [ ] Healthcare Accessibility and Quality Index
+  - [ ] Public Transport Quality (index or satisfaction score)
+  - [ ] Cost of Living Index
+  - [ ] Overall Quality of Life Index (e.g., Eurostat aggregate measures)
+- [ ] **Violence and Safety**
+  - [ ] Crime Rate (per 100,000 people)
+  - [ ] Homicide Rate (per 100,000 people)
+  - [ ] Perceived Safety Index (subjective measure)
+  - [ ] Violence Against Women (% of population reporting)
+  - [ ] Terrorism or Political Violence Incidents (if relevant)
