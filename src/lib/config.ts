@@ -156,7 +156,6 @@ export const config = {
       },
       euKey: "european union - 27 countries (from 2020)",
       unit: "eur",
-      debug: true,
     },
   ],
 

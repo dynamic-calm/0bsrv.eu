@@ -2,7 +2,6 @@
 
 import { countries } from "@/lib/config";
 import { notFound, useSearchParams } from "next/navigation";
-import { random } from "colord";
 
 import {
   ResponsiveContainer,
