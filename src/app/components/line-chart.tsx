@@ -91,7 +91,11 @@ export default function MyLineChart({
               strokeDasharray: "3 3",
             }}
             formatter={(value: number) =>
-              Intl.NumberFormat("en-US").format(value)
+              Intl.NumberFormat("en-US", {
+                style: unit === "percent" ? "percent" : "decimal",
+                maximumFractionDigits: 2,
+                minimumFractionDigits: 2,
+              }).format(unit === "percent" ? value / 100 : value)
             }
           />
           {typeof lineKey === "string" ? (
@@ -100,8 +104,9 @@ export default function MyLineChart({
               dataKey={lineKey}
               stroke="var(--accent-color-1)"
               dot={false}
-              isAnimationActive={false}
               activeDot={false}
+              animationEasing="ease-in-out"
+              animationDuration={1200}
             />
           ) : (
             lineKey.map((key: string, index: number) => (
@@ -111,8 +116,9 @@ export default function MyLineChart({
                 dataKey={key}
                 stroke={`var(--accent-color-${index + 1})`}
                 dot={false}
-                isAnimationActive={false}
                 activeDot={false}
+                animationEasing="ease-in-out"
+                animationDuration={1200}
               />
             ))
           )}

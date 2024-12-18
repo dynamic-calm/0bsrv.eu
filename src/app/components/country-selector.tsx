@@ -23,7 +23,7 @@ export function CountrySelector() {
     } else {
       params.set(key, valueToSet);
     }
-    router.replace(`${pathname}?${params.toString()}`);
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
   }
 
   const selectedCountries = [1, 2, 3, 4].map((index) => {
