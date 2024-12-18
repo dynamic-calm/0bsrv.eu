@@ -14,6 +14,8 @@ import {
   getPopulationGrowth,
   getUnemployment,
 } from "@/lib/eurostat";
+import { COUNTRIES } from "@/app/countries";
+import { notFound } from "next/navigation";
 
 type SearchParams = {
   country1?: string;
@@ -25,50 +27,42 @@ export default async function Home(props: {
   searchParams?: Promise<SearchParams>;
 }) {
   const searchParams = await props.searchParams;
-  console.log("onpageeeee", searchParams);
+
+  if (searchParams) {
+    for (const country of Object.values(searchParams)) {
+      if (!COUNTRIES.includes(country)) return notFound();
+    }
+  }
 
   return (
     <main className="mx-auto min-h-screen px-2">
       <CountrySelector />
-      <div className="grid grid-cols-1 gap-2 lg:grid-cols-2 xl:grid-cols-3">
+      <div className="3xl:grid-cols-3 grid grid-cols-1 gap-2 xl:grid-cols-2">
         <Title>Economic Indicators</Title>
         <Suspense fallback={<ChartLoader label="Inflation" />}>
           <Inflation searchParams={searchParams} />
         </Suspense>
         <Suspense fallback={<ChartLoader label="GDP Growth" />}>
-          <GDPGrowth />
+          <GDPGrowth searchParams={searchParams} />
         </Suspense>
         <Suspense fallback={<ChartLoader label="Unemployment" />}>
-          <Unemployment />
+          <Unemployment searchParams={searchParams} />
         </Suspense>
         <Suspense fallback={<ChartLoader label="House Prices" />}>
-          <HousePriceIndex />
+          <HousePriceIndex searchParams={searchParams} />
         </Suspense>
         <Title>Demographic Data</Title>
         <Suspense fallback={<ChartLoader label="Population Growth" />}>
-          <PopulationGrowth />
+          <PopulationGrowth searchParams={searchParams} />
         </Suspense>
-        <Suspense fallback={<ChartLoader label="Female and Male Birth Rate" />}>
-          <Deaths />
+        <Suspense fallback={<ChartLoader label="Number Of Deaths Per Year" />}>
+          <Deaths searchParams={searchParams} />
         </Suspense>
         <Suspense fallback={<ChartLoader label="Population" />}>
-          <Population />
+          <Population searchParams={searchParams} />
         </Suspense>
         <Suspense fallback={<ChartLoader label="Crime Rate" />}>
-          <CrimeRate />
-        </Suspense>
-        <Title>Economic Indicators</Title>
-        <Suspense fallback={<ChartLoader label="Inflation" />}>
-          <Inflation />
-        </Suspense>
-        <Suspense fallback={<ChartLoader label="GDP Growth" />}>
-          <GDPGrowth />
-        </Suspense>
-        <Suspense fallback={<ChartLoader label="Unemployment" />}>
-          <Unemployment />
-        </Suspense>
-        <Suspense fallback={<ChartLoader label="House Prices" />}>
-          <HousePriceIndex />
+          <CrimeRate searchParams={searchParams} />
         </Suspense>
       </div>
     </main>
@@ -77,9 +71,8 @@ export default async function Home(props: {
 
 async function Inflation({ searchParams }: { searchParams?: SearchParams }) {
   const inflation = await getInflation();
-  const lineKey = ["spain"];
+  const lineKey = ["eu"];
 
-  console.log("searchParams on inflation", searchParams);
   if (searchParams) {
     lineKey.push(searchParams.country1 || "none");
     lineKey.push(searchParams.country2 || "none");
@@ -99,92 +92,162 @@ async function Inflation({ searchParams }: { searchParams?: SearchParams }) {
   );
 }
 
-async function GDPGrowth() {
+async function GDPGrowth({ searchParams }: { searchParams?: SearchParams }) {
   const gdp = await getGDPGrowth();
+  const lineKey = ["eu"];
+  if (searchParams) {
+    lineKey.push(searchParams.country1 || "none");
+    lineKey.push(searchParams.country2 || "none");
+    lineKey.push(searchParams.country3 || "none");
+    lineKey.push(searchParams.country4 || "none");
+  }
+
   return (
     <Box label="GDP Growth">
-      <MyLineChart data={gdp} xAxisKey="year" lineKey="gdp" unit="percent" />
+      <MyLineChart
+        data={gdp}
+        xAxisKey="time"
+        lineKey={lineKey}
+        unit="percent"
+      />
     </Box>
   );
 }
 
-async function Unemployment() {
+async function Unemployment({ searchParams }: { searchParams?: SearchParams }) {
   const unemployment = await getUnemployment();
+  const lineKey = ["eu"];
+  if (searchParams) {
+    lineKey.push(searchParams.country1 || "none");
+    lineKey.push(searchParams.country2 || "none");
+    lineKey.push(searchParams.country3 || "none");
+    lineKey.push(searchParams.country4 || "none");
+  }
   return (
     <Box label="Unemployment">
       <MyLineChart
         data={unemployment}
-        xAxisKey="year"
-        lineKey="unemployment"
+        xAxisKey="time"
+        lineKey={lineKey}
         unit="percent"
       />
     </Box>
   );
 }
 
-async function PopulationGrowth() {
-  const populationGrowth = await getPopulationGrowth();
-  return (
-    <Box label="Population Growth">
-      <MyLineChart
-        data={populationGrowth}
-        xAxisKey="year"
-        lineKey="growth"
-        unit="percent"
-      />
-    </Box>
-  );
-}
-
-async function Deaths() {
-  const deaths = await getDeaths();
-  return (
-    <Box label="Number of Deaths Per Year">
-      <MyLineChart
-        data={deaths}
-        xAxisKey="year"
-        lineKey="deaths"
-        unit="count"
-        tickFormatter="millions"
-      />
-    </Box>
-  );
-}
-
-async function Population() {
-  const population = await getPopulation();
-  return (
-    <Box label="Population">
-      <MyLineChart
-        data={population}
-        xAxisKey="year"
-        lineKey="population"
-        unit="count"
-        tickFormatter="millions"
-      />
-    </Box>
-  );
-}
-
-async function HousePriceIndex() {
+async function HousePriceIndex({
+  searchParams,
+}: {
+  searchParams?: SearchParams;
+}) {
   const housePriceIndex = await getHousePriceIndex();
+  const lineKey = ["eu"];
+  if (searchParams) {
+    lineKey.push(searchParams.country1 || "none");
+    lineKey.push(searchParams.country2 || "none");
+    lineKey.push(searchParams.country3 || "none");
+    lineKey.push(searchParams.country4 || "none");
+  }
+
   return (
     <Box label="House Prices">
       <MyLineChart
         data={housePriceIndex}
-        xAxisKey="year"
-        lineKey="price"
+        xAxisKey="time"
+        lineKey={lineKey}
         unit="index"
       />
     </Box>
   );
 }
 
-async function CrimeRate() {
+async function PopulationGrowth({
+  searchParams,
+}: {
+  searchParams?: SearchParams;
+}) {
+  const populationGrowth = await getPopulationGrowth();
+  const lineKey = ["eu"];
+  if (searchParams) {
+    lineKey.push(searchParams.country1 || "none");
+    lineKey.push(searchParams.country2 || "none");
+    lineKey.push(searchParams.country3 || "none");
+    lineKey.push(searchParams.country4 || "none");
+  }
+
+  return (
+    <Box label="Population Growth">
+      <MyLineChart
+        data={populationGrowth}
+        xAxisKey="time"
+        lineKey={lineKey}
+        unit="percent"
+      />
+    </Box>
+  );
+}
+
+async function Deaths({ searchParams }: { searchParams?: SearchParams }) {
+  const deaths = await getDeaths();
+
+  const lineKey = ["eu"];
+  if (searchParams) {
+    lineKey.push(searchParams.country1 || "none");
+    lineKey.push(searchParams.country2 || "none");
+    lineKey.push(searchParams.country3 || "none");
+    lineKey.push(searchParams.country4 || "none");
+  }
+
+  return (
+    <Box label="Number of Deaths Per Year">
+      <MyLineChart
+        data={deaths}
+        xAxisKey="time"
+        lineKey={lineKey}
+        unit="count"
+        tickFormatter="millions"
+      />
+    </Box>
+  );
+}
+
+async function Population({ searchParams }: { searchParams?: SearchParams }) {
+  const population = await getPopulation();
+  const lineKey = ["eu"];
+  if (searchParams) {
+    lineKey.push(searchParams.country1 || "none");
+    lineKey.push(searchParams.country2 || "none");
+    lineKey.push(searchParams.country3 || "none");
+    lineKey.push(searchParams.country4 || "none");
+  }
+
+  return (
+    <Box label="Population">
+      <MyLineChart
+        data={population}
+        xAxisKey="time"
+        lineKey={lineKey}
+        unit="count"
+        tickFormatter="millions"
+      />
+    </Box>
+  );
+}
+
+async function CrimeRate({ searchParams }: { searchParams?: SearchParams }) {
   const crime = await getCrimeRate();
+
+  const lineKey = ["eu"];
+  if (searchParams) {
+    lineKey.push(searchParams.country1 || "none");
+    lineKey.push(searchParams.country2 || "none");
+    lineKey.push(searchParams.country3 || "none");
+    lineKey.push(searchParams.country4 || "none");
+  }
+
   return (
     <Box label="Crime Rate">
-      <MyLineChart data={crime} xAxisKey="year" lineKey="crime" unit="rate" />
+      <MyLineChart data={crime} xAxisKey="time" lineKey={lineKey} unit="rate" />
     </Box>
   );
 }

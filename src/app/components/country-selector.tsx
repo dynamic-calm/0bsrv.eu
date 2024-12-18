@@ -7,46 +7,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/app/components/ui/select";
+import { COUNTRIES } from "@/app/countries";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-
-const COUNTRIES = [
-  "belgium",
-  "bulgaria",
-  "czechia",
-  "denmark",
-  "germany",
-  "estonia",
-  "ireland",
-  "greece",
-  "spain",
-  "france",
-  "croatia",
-  "italy",
-  "cyprus",
-  "latvia",
-  "lithuania",
-  "luxembourg",
-  "hungary",
-  "malta",
-  "netherlands",
-  "austria",
-  "poland",
-  "portugal",
-  "romania",
-  "slovenia",
-  "slovakia",
-  "finland",
-  "sweden",
-  "iceland",
-  "norway",
-  "switzerland",
-  "montenegro",
-  "north macedonia",
-  "albania",
-  "serbia",
-  "turkey",
-  "kosovo",
-].sort();
 
 export function CountrySelector() {
   const router = useRouter();
