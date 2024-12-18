@@ -14,7 +14,7 @@ export default function Home() {
       <Suspense fallback={<CountrySelectorFallback />}>
         <CountrySelector />
       </Suspense>
-      <div className="grid grid-cols-1 gap-2 xl:grid-cols-2">
+      <div className="grid grid-cols-1 gap-2 xl:grid-cols-2 3xl:grid-cols-3">
         <Title>Economic Indicators</Title>
         {config.economy.map((data) => (
           <Suspense
@@ -37,6 +37,28 @@ export default function Home() {
             <Chart {...data} />
           </Suspense>
         ))}
+        <Title>Quality of Living</Title>
+        {config.qualityOfLife.map((data) => (
+          <Suspense
+            key={data.dataSetCode.concat(data.label)}
+            fallback={
+              <ChartLoader label={data.label} dataSetCode={data.dataSetCode} />
+            }
+          >
+            <Chart {...data} />
+          </Suspense>
+        ))}
+        <Title>Environmental Data</Title>
+        {config.environment.map((data) => (
+          <Suspense
+            key={data.dataSetCode.concat(data.label)}
+            fallback={
+              <ChartLoader label={data.label} dataSetCode={data.dataSetCode} />
+            }
+          >
+            <Chart {...data} />
+          </Suspense>
+        ))}
       </div>
     </main>
   );
@@ -47,9 +69,10 @@ type ChartData = {
   params: Record<string, string>;
   euKey: string;
   label: string;
-  unit: "rate" | "count" | "index" | "percent";
+  unit: "rate" | "count" | "index" | "percent" | "tonnes p/c" | "eur";
   hideEu?: boolean;
   tickFormatter?: "millions" | "thousands";
+  debug?: boolean;
 };
 
 async function Chart({
@@ -59,18 +82,12 @@ async function Chart({
   label,
   unit,
   hideEu,
-  tickFormatter,
+  debug,
 }: ChartData) {
-  const data = await getData({ dataSetCode, params, euKey });
+  const data = await getData({ dataSetCode, params, euKey, debug });
   return (
     <Box label={label} dataSetCode={dataSetCode}>
-      <MyLineChart
-        data={data}
-        xAxisKey="time"
-        unit={unit}
-        tickFormatter={tickFormatter}
-        hideEu={hideEu}
-      />
+      <MyLineChart data={data} xAxisKey="time" unit={unit} hideEu={hideEu} />
     </Box>
   );
 }

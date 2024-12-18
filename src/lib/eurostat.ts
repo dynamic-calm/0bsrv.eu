@@ -13,9 +13,10 @@ type GetData = {
   dataSetCode: string;
   params: Record<string, string>;
   euKey: string;
+  debug?: boolean;
 };
 
-export async function getData({ dataSetCode, params, euKey }: GetData) {
+export async function getData({ dataSetCode, params, euKey, debug }: GetData) {
   const url = `${HOST}/${dataSetCode}?${new URLSearchParams(params).toString()}`;
   const jst = await JSONstat(url);
   const timeIds = jst.Dataset(0).Dimension("time").id;
@@ -40,6 +41,10 @@ export async function getData({ dataSetCode, params, euKey }: GetData) {
     );
 
     result.push(dataPerTime);
+  }
+
+  if (debug) {
+    console.log(result);
   }
 
   return result;

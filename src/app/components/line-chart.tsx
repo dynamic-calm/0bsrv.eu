@@ -2,7 +2,8 @@
 
 import { countries } from "@/lib/config";
 import { notFound, useSearchParams } from "next/navigation";
-import { useMemo } from "react";
+import { random } from "colord";
+
 import {
   ResponsiveContainer,
   CartesianGrid,
@@ -17,37 +18,29 @@ export default function MyLineChart({
   data,
   xAxisKey,
   unit,
-  tickFormatter,
   hideEu,
 }: {
   data: unknown[];
   xAxisKey: string;
   unit: string;
-  tickFormatter?: "millions" | "thousands";
   hideEu?: boolean;
 }) {
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams);
   const lineKey = hideEu ? [""] : ["eu"];
-  if (searchParams) {
-    lineKey.push(params.get("country1") || "none");
-    lineKey.push(params.get("country2") || "none");
-    lineKey.push(params.get("country3") || "none");
-    lineKey.push(params.get("country4") || "none");
-  }
+  lineKey.push(params.get("country1") || "none");
+  lineKey.push(params.get("country2") || "none");
+  lineKey.push(params.get("country3") || "none");
+  lineKey.push(params.get("country4") || "none");
+  const all = Boolean(params.get("all"));
 
-  for (const param of params.values()) {
-    if (!countries.includes(param) && param !== "none") notFound();
+  if (!all) {
+    for (const param of params.values()) {
+      if (!countries.includes(param) && param !== "none") {
+        notFound();
+      }
+    }
   }
-
-  const formatter = useMemo(() => {
-    if (tickFormatter === "millions") {
-      return (value: number) => String(value / 1000_000).concat("M");
-    }
-    if (tickFormatter === "thousands") {
-      return (value: number) => String(value / 1000).concat("K");
-    }
-  }, [tickFormatter]);
 
   return (
     <div className="flex h-full w-full flex-col">
@@ -76,7 +69,12 @@ export default function MyLineChart({
           <YAxis
             className="text-xxs"
             axisLine={false}
-            tickFormatter={formatter}
+            tickFormatter={(value: number) =>
+              Intl.NumberFormat("en-US", {
+                notation: "compact",
+                compactDisplay: "short",
+              }).format(value)
+            }
           />
           <Tooltip
             contentStyle={{
@@ -84,43 +82,58 @@ export default function MyLineChart({
               borderRadius: "0.125rem",
               border: "1px solid var(--color-gray-600)",
               fontFamily: "var(--font-geist-mono)",
+              overflow: "auto",
+              maxHeight: all === true ? "250px" : "none",
             }}
+            itemSorter={(item) => -Number(item.value)}
             cursor={{
               stroke: "var(--color-gray-900)",
               strokeWidth: 1,
               strokeDasharray: "3 3",
             }}
-            formatter={(value: number) =>
-              Intl.NumberFormat("en-US", {
-                style: unit === "percent" ? "percent" : "decimal",
+            wrapperStyle={{ pointerEvents: "auto" }}
+            formatter={(value: number) => {
+              let style: Intl.NumberFormatOptions["style"];
+              if (unit === "percent") {
+                style = "percent";
+              } else if (unit === "eur") {
+                style = "currency";
+              } else {
+                style = "decimal";
+              }
+
+              return Intl.NumberFormat("en-US", {
+                style,
                 maximumFractionDigits: 2,
                 minimumFractionDigits: 2,
-              }).format(unit === "percent" ? value / 100 : value)
-            }
+                notation: "compact",
+                compactDisplay: "short",
+                currencyDisplay: "narrowSymbol",
+                currency: "EUR",
+              }).format(unit === "percent" ? value / 100 : value);
+            }}
           />
-          {typeof lineKey === "string" ? (
-            <Line
-              type="monotone"
-              dataKey={lineKey}
-              stroke="var(--accent-color-1)"
-              dot={false}
-              activeDot={false}
-              animationEasing="ease-in-out"
-              animationDuration={1200}
-            />
-          ) : (
-            lineKey.map((key: string, index: number) => (
-              <Line
-                key={key}
-                type="monotone"
-                dataKey={key}
-                stroke={`var(--accent-color-${index + 1})`}
-                dot={false}
-                activeDot={false}
-                animationEasing="ease-in-out"
-                animationDuration={1200}
-              />
-            ))
+
+          {[...(all === true ? countries : lineKey)].map(
+            (key: string, index: number) => {
+              const stroke =
+                index < 4
+                  ? `var(--accent-color-${index + 1})`
+                  : random().toHex();
+
+              return (
+                <Line
+                  key={key}
+                  type="monotone"
+                  dataKey={key}
+                  stroke={stroke}
+                  dot={false}
+                  activeDot={false}
+                  animationEasing="ease-in-out"
+                  animationDuration={1200}
+                />
+              );
+            },
           )}
         </LineChart>
       </ResponsiveContainer>

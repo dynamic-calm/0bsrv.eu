@@ -62,6 +62,18 @@ export const config = {
         "european union (eu6-1958, eu9-1973, eu10-1981, eu12-1986, eu15-1995, eu25-2004, eu27-2007, eu28-2013, eu27-2020)",
       unit: "index",
     },
+    {
+      label: "Economic Sentiment Indicator",
+      dataSetCode: "ei_bssi_m_r2",
+      params: {
+        indic: "BS-ESI-I",
+        s_adj: "SA",
+        startPeriod: "2007-Q1",
+        endPeriod: "2024-Q3",
+      },
+      euKey: "european union - 27 countries (from 2020)",
+      unit: "index",
+    },
   ],
   demography: [
     {
@@ -83,7 +95,6 @@ export const config = {
       euKey: "european union - 27 countries (from 2020)",
       label: "Number of Deaths",
       hideEu: true,
-      tickFormatter: "millions",
     },
     {
       label: "Population",
@@ -94,7 +105,6 @@ export const config = {
       euKey: "euro area – 20 countries (from 2023)",
       unit: "count",
       hideEu: true,
-      tickFormatter: "millions",
     },
     {
       label: "Crime Rate",
@@ -106,7 +116,72 @@ export const config = {
       },
       euKey:
         "european union (eu6-1958, eu9-1973, eu10-1981, eu12-1986, eu15-1995, eu25-2004, eu27-2007, eu28-2013, eu27-2020)",
-      unit: "rate",
+      unit: "percent",
+    },
+  ],
+
+  qualityOfLife: [
+    {
+      label: "Overall life satisfaction",
+      dataSetCode: "ilc_pw01",
+      params: {
+        unit: "RTG",
+        isced11: "TOTAL",
+        sex: "T",
+        age: "Y_GE16",
+      },
+      euKey: "european union - 27 countries (from 2020)",
+      unit: "index",
+    },
+    {
+      label: "People at Risk of Poverty",
+      dataSetCode: "ilc_peps01n",
+      params: {
+        unit: "PC",
+        sex: "T",
+        age: "TOTAL",
+      },
+      euKey: "european union - 27 countries (from 2020)",
+      unit: "percent",
+    },
+
+    {
+      label: "Income",
+      dataSetCode: "ilc_di03",
+      params: {
+        age: "Y18-64",
+        unit: "EUR",
+        sex: "T",
+        indic_il: "MED_E",
+      },
+      euKey: "european union - 27 countries (from 2020)",
+      unit: "eur",
+      debug: true,
+    },
+  ],
+
+  environment: [
+    {
+      label: "Greenhouse Gas Emissions",
+      unit: "tonnes p/c",
+      dataSetCode: "env_ac_aigg_q",
+      params: {
+        unit: "T_HAB",
+        airpol: "GHG",
+        nace_r2: "TOTAL_HH",
+      },
+      euKey: "european union - 27 countries (from 2020)",
+    },
+    {
+      label: "Electricity consumed by end-users",
+      unit: "percent",
+      dataSetCode: "nrg_cb_eim",
+      params: {
+        unit: "PCH_LV_M_16-19",
+        startPeriod: "2020-Q1",
+        endPeriod: "2024-Q4",
+      },
+      euKey: "european union - 27 countries (from 2020)",
     },
   ],
 } as const;
