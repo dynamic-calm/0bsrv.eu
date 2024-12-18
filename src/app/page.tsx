@@ -10,7 +10,9 @@ import { config } from "@/lib/config";
 export default function Home() {
   return (
     <main className="mx-auto min-h-screen px-2">
-      <CountrySelector />
+      <Suspense>
+        <CountrySelector />
+      </Suspense>
       <div className="grid grid-cols-1 gap-2 xl:grid-cols-2">
         <Title>Economic Indicators</Title>
         {config.economy.map((data) => (

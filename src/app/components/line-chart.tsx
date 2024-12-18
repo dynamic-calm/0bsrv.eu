@@ -1,7 +1,6 @@
 "use client";
 
 import { countries } from "@/lib/config";
-import { count } from "console";
 import { notFound, useSearchParams } from "next/navigation";
 import { useMemo } from "react";
 import {
