@@ -4,16 +4,7 @@ import { ChartLoader } from "@/app/components/chart-loader";
 import { Box } from "@/app/components/box";
 import { Title } from "@/app/components/title";
 import { CountrySelector } from "@/app/components/country-selector";
-import {
-  getCrimeRate,
-  getDeaths,
-  getGDPGrowth,
-  getHousePriceIndex,
-  getInflation,
-  getPopulation,
-  getPopulationGrowth,
-  getUnemployment,
-} from "@/lib/eurostat";
+import { getData } from "@/lib/eurostat";
 import { COUNTRIES } from "@/app/countries";
 import { notFound } from "next/navigation";
 
@@ -39,134 +30,151 @@ export default async function Home(props: {
       <CountrySelector />
       <div className="3xl:grid-cols-3 grid grid-cols-1 gap-2 xl:grid-cols-2">
         <Title>Economic Indicators</Title>
-        <Suspense fallback={<ChartLoader label="Inflation" />}>
-          <Inflation searchParams={searchParams} />
-        </Suspense>
-        <Suspense fallback={<ChartLoader label="GDP Growth" />}>
-          <GDPGrowth searchParams={searchParams} />
-        </Suspense>
-        <Suspense fallback={<ChartLoader label="Unemployment" />}>
-          <Unemployment searchParams={searchParams} />
-        </Suspense>
-        <Suspense fallback={<ChartLoader label="House Prices" />}>
-          <HousePriceIndex searchParams={searchParams} />
-        </Suspense>
+        {config.economy.map(({ dataSetCode, params, euKey, label, unit }) => (
+          <Suspense key={dataSetCode} fallback={<ChartLoader label={label} />}>
+            <Chart
+              dataSetCode={dataSetCode}
+              params={params}
+              euKey={euKey}
+              searchParams={searchParams}
+              label={label}
+              unit={unit}
+            />
+          </Suspense>
+        ))}
         <Title>Demographic Data</Title>
-        <Suspense fallback={<ChartLoader label="Population Growth" />}>
-          <PopulationGrowth searchParams={searchParams} />
-        </Suspense>
-        <Suspense fallback={<ChartLoader label="Number Of Deaths Per Year" />}>
-          <Deaths searchParams={searchParams} />
-        </Suspense>
-        <Suspense fallback={<ChartLoader label="Population" />}>
-          <Population searchParams={searchParams} />
-        </Suspense>
-        <Suspense fallback={<ChartLoader label="Crime Rate" />}>
-          <CrimeRate searchParams={searchParams} />
-        </Suspense>
+
+        {config.demography.map(
+          ({ dataSetCode, params, euKey, label, unit }) => (
+            <Suspense
+              key={dataSetCode.concat(label)}
+              fallback={<ChartLoader label={label} />}
+            >
+              <Chart
+                dataSetCode={dataSetCode}
+                params={params}
+                euKey={euKey}
+                searchParams={searchParams}
+                label={label}
+                unit={unit}
+              />
+            </Suspense>
+          ),
+        )}
       </div>
     </main>
   );
 }
 
-async function Inflation({ searchParams }: { searchParams?: SearchParams }) {
-  const inflation = await getInflation();
-  const lineKey = ["eu"];
+const config = {
+  economy: [
+    {
+      dataSetCode: "prc_hicp_manr",
+      params: {
+        unit: "RCH_A",
+        coicop: "CP00",
+      },
+      euKey:
+        "european union (eu6-1958, eu9-1973, eu10-1981, eu12-1986, eu15-1995, eu25-2004, eu27-2007, eu28-2013, eu27-2020)",
+      label: "Inflation",
+      unit: "percent",
+    },
+    {
+      dataSetCode: "namq_10_gdp",
+      params: {
+        unit: "CLV_PCH_PRE",
+        s_adj: "SCA",
+        na_item: "B1GQ",
+      },
+      euKey:
+        "euro area (ea11-1999, ea12-2001, ea13-2007, ea15-2008, ea16-2009, ea17-2011, ea18-2014, ea19-2015, ea20-2023)",
+      label: "GDP Growth",
+      unit: "percent",
+    },
+    {
+      dataSetCode: "une_rt_m",
+      params: {
+        unit: "PC_ACT",
+        s_adj: "SA",
+        age: "TOTAL",
+        sex: "T",
+      },
+      euKey: "european union - 27 countries (from 2020)",
+      label: "Unemployment",
+      unit: "percent",
+    },
+    {
+      dataSetCode: "prc_hpi_q",
+      params: {
+        purchase: "TOTAL",
+      },
+      euKey:
+        "european union (eu6-1958, eu9-1973, eu10-1981, eu12-1986, eu15-1995, eu25-2004, eu27-2007, eu28-2013, eu27-2020)",
+      label: "House Prices",
+      unit: "index",
+    },
+  ],
+  demography: [
+    {
+      dataSetCode: "demo_gind",
+      params: {
+        indic_de: "GROWRT",
+        lang: "en",
+      },
+      euKey: "european economic area (eu28 - 2013-2020 and is, li, no)",
+      label: "Population Growth",
+      unit: "percent",
+    },
+    {
+      dataSetCode: "demo_gind",
+      params: {
+        indic_de: "DEATH",
+      },
+      euKey: "european union - 27 countries (from 2020)",
+      label: "Number of Deaths",
+      unit: "count",
+    },
+    {
+      dataSetCode: "demo_gind",
+      params: {
+        indic_de: "AVG",
+      },
+      euKey: "euro area – 20 countries (from 2023)",
+      label: "Population",
+      unit: "count",
+    },
+    {
+      dataSetCode: "ilc_mddw03",
+      params: {
+        unit: "PC",
+        hhtyp: "TOTAL",
+        incgrp: "TOTAL",
+      },
+      euKey: "euro area – 20 countries (from 2023)",
+      label: "Crime Rate",
+      unit: "rate",
+    },
+  ],
+} as const;
 
-  if (searchParams) {
-    lineKey.push(searchParams.country1 || "none");
-    lineKey.push(searchParams.country2 || "none");
-    lineKey.push(searchParams.country3 || "none");
-    lineKey.push(searchParams.country4 || "none");
-  }
-
-  return (
-    <Box label="Inflation">
-      <MyLineChart
-        data={inflation}
-        xAxisKey="time"
-        lineKey={lineKey}
-        unit="percent"
-      />
-    </Box>
-  );
-}
-
-async function GDPGrowth({ searchParams }: { searchParams?: SearchParams }) {
-  const gdp = await getGDPGrowth();
-  const lineKey = ["eu"];
-  if (searchParams) {
-    lineKey.push(searchParams.country1 || "none");
-    lineKey.push(searchParams.country2 || "none");
-    lineKey.push(searchParams.country3 || "none");
-    lineKey.push(searchParams.country4 || "none");
-  }
-
-  return (
-    <Box label="GDP Growth">
-      <MyLineChart
-        data={gdp}
-        xAxisKey="time"
-        lineKey={lineKey}
-        unit="percent"
-      />
-    </Box>
-  );
-}
-
-async function Unemployment({ searchParams }: { searchParams?: SearchParams }) {
-  const unemployment = await getUnemployment();
-  const lineKey = ["eu"];
-  if (searchParams) {
-    lineKey.push(searchParams.country1 || "none");
-    lineKey.push(searchParams.country2 || "none");
-    lineKey.push(searchParams.country3 || "none");
-    lineKey.push(searchParams.country4 || "none");
-  }
-  return (
-    <Box label="Unemployment">
-      <MyLineChart
-        data={unemployment}
-        xAxisKey="time"
-        lineKey={lineKey}
-        unit="percent"
-      />
-    </Box>
-  );
-}
-
-async function HousePriceIndex({
-  searchParams,
-}: {
+type ChartData = {
+  dataSetCode: string;
+  params: Record<string, string>;
+  euKey: string;
   searchParams?: SearchParams;
-}) {
-  const housePriceIndex = await getHousePriceIndex();
-  const lineKey = ["eu"];
-  if (searchParams) {
-    lineKey.push(searchParams.country1 || "none");
-    lineKey.push(searchParams.country2 || "none");
-    lineKey.push(searchParams.country3 || "none");
-    lineKey.push(searchParams.country4 || "none");
-  }
+  label: string;
+  unit: "rate" | "count" | "index" | "millions" | "percent";
+};
 
-  return (
-    <Box label="House Prices">
-      <MyLineChart
-        data={housePriceIndex}
-        xAxisKey="time"
-        lineKey={lineKey}
-        unit="index"
-      />
-    </Box>
-  );
-}
-
-async function PopulationGrowth({
+async function Chart({
+  dataSetCode,
+  params,
+  euKey,
   searchParams,
-}: {
-  searchParams?: SearchParams;
-}) {
-  const populationGrowth = await getPopulationGrowth();
+  label,
+  unit,
+}: ChartData) {
+  const data = await getData({ dataSetCode, params, euKey });
   const lineKey = ["eu"];
   if (searchParams) {
     lineKey.push(searchParams.country1 || "none");
@@ -176,78 +184,8 @@ async function PopulationGrowth({
   }
 
   return (
-    <Box label="Population Growth">
-      <MyLineChart
-        data={populationGrowth}
-        xAxisKey="time"
-        lineKey={lineKey}
-        unit="percent"
-      />
-    </Box>
-  );
-}
-
-async function Deaths({ searchParams }: { searchParams?: SearchParams }) {
-  const deaths = await getDeaths();
-
-  const lineKey = ["eu"];
-  if (searchParams) {
-    lineKey.push(searchParams.country1 || "none");
-    lineKey.push(searchParams.country2 || "none");
-    lineKey.push(searchParams.country3 || "none");
-    lineKey.push(searchParams.country4 || "none");
-  }
-
-  return (
-    <Box label="Number of Deaths Per Year">
-      <MyLineChart
-        data={deaths}
-        xAxisKey="time"
-        lineKey={lineKey}
-        unit="count"
-        tickFormatter="millions"
-      />
-    </Box>
-  );
-}
-
-async function Population({ searchParams }: { searchParams?: SearchParams }) {
-  const population = await getPopulation();
-  const lineKey = ["eu"];
-  if (searchParams) {
-    lineKey.push(searchParams.country1 || "none");
-    lineKey.push(searchParams.country2 || "none");
-    lineKey.push(searchParams.country3 || "none");
-    lineKey.push(searchParams.country4 || "none");
-  }
-
-  return (
-    <Box label="Population">
-      <MyLineChart
-        data={population}
-        xAxisKey="time"
-        lineKey={lineKey}
-        unit="count"
-        tickFormatter="millions"
-      />
-    </Box>
-  );
-}
-
-async function CrimeRate({ searchParams }: { searchParams?: SearchParams }) {
-  const crime = await getCrimeRate();
-
-  const lineKey = ["eu"];
-  if (searchParams) {
-    lineKey.push(searchParams.country1 || "none");
-    lineKey.push(searchParams.country2 || "none");
-    lineKey.push(searchParams.country3 || "none");
-    lineKey.push(searchParams.country4 || "none");
-  }
-
-  return (
-    <Box label="Crime Rate">
-      <MyLineChart data={crime} xAxisKey="time" lineKey={lineKey} unit="rate" />
+    <Box label={label}>
+      <MyLineChart data={data} xAxisKey="time" lineKey={lineKey} unit={unit} />
     </Box>
   );
 }
