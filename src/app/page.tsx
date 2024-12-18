@@ -1,4 +1,9 @@
 import MyLineChart from "@/app/components/line-chart";
+import { Suspense } from "react";
+import { ChartLoader } from "@/app/components/chart-loader";
+import { Box } from "@/app/components/box";
+import { Title } from "@/app/components/title";
+import { CountrySelector } from "@/app/components/country-selector";
 import {
   getCrimeRate,
   getDeaths,
@@ -9,18 +14,26 @@ import {
   getPopulationGrowth,
   getUnemployment,
 } from "@/lib/eurostat";
-import { Suspense } from "react";
-import { ChartLoader } from "@/app/components/chart-loader";
-import { Box } from "@/app/components/box";
-import { Title } from "@/app/components/title";
 
-export default function Home() {
+type SearchParams = {
+  country1?: string;
+  country2?: string;
+  country3?: string;
+  country4?: string;
+};
+export default async function Home(props: {
+  searchParams?: Promise<SearchParams>;
+}) {
+  const searchParams = await props.searchParams;
+  console.log("onpageeeee", searchParams);
+
   return (
-    <main className="mx-auto min-h-screen w-full p-2">
-      <div className="grid h-full w-full grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-3">
+    <main className="mx-auto min-h-screen px-2">
+      <CountrySelector />
+      <div className="grid grid-cols-1 gap-2 lg:grid-cols-2 xl:grid-cols-3">
         <Title>Economic Indicators</Title>
         <Suspense fallback={<ChartLoader label="Inflation" />}>
-          <Inflation />
+          <Inflation searchParams={searchParams} />
         </Suspense>
         <Suspense fallback={<ChartLoader label="GDP Growth" />}>
           <GDPGrowth />
@@ -44,19 +57,42 @@ export default function Home() {
         <Suspense fallback={<ChartLoader label="Crime Rate" />}>
           <CrimeRate />
         </Suspense>
+        <Title>Economic Indicators</Title>
+        <Suspense fallback={<ChartLoader label="Inflation" />}>
+          <Inflation />
+        </Suspense>
+        <Suspense fallback={<ChartLoader label="GDP Growth" />}>
+          <GDPGrowth />
+        </Suspense>
+        <Suspense fallback={<ChartLoader label="Unemployment" />}>
+          <Unemployment />
+        </Suspense>
+        <Suspense fallback={<ChartLoader label="House Prices" />}>
+          <HousePriceIndex />
+        </Suspense>
       </div>
     </main>
   );
 }
 
-async function Inflation() {
+async function Inflation({ searchParams }: { searchParams?: SearchParams }) {
   const inflation = await getInflation();
+  const lineKey = ["spain"];
+
+  console.log("searchParams on inflation", searchParams);
+  if (searchParams) {
+    lineKey.push(searchParams.country1 || "none");
+    lineKey.push(searchParams.country2 || "none");
+    lineKey.push(searchParams.country3 || "none");
+    lineKey.push(searchParams.country4 || "none");
+  }
+
   return (
     <Box label="Inflation">
       <MyLineChart
         data={inflation}
-        xAxisKey="year"
-        lineKey="inflation"
+        xAxisKey="time"
+        lineKey={lineKey}
         unit="percent"
       />
     </Box>
@@ -145,15 +181,10 @@ async function HousePriceIndex() {
 }
 
 async function CrimeRate() {
-  const crimeRate = await getCrimeRate();
+  const crime = await getCrimeRate();
   return (
     <Box label="Crime Rate">
-      <MyLineChart
-        data={crimeRate}
-        xAxisKey="year"
-        lineKey="crimeRate"
-        unit="rate"
-      />
+      <MyLineChart data={crime} xAxisKey="year" lineKey="crime" unit="rate" />
     </Box>
   );
 }

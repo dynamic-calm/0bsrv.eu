@@ -19,13 +19,13 @@ export default function MyLineChart({
 }: {
   data: unknown[];
   xAxisKey: string;
-  lineKey: string;
+  lineKey: string | string[];
   unit: string;
   tickFormatter?: "millions";
 }) {
   return (
     <div className="flex h-full w-full flex-col">
-      <div className="text-gray-1200 text-xxs pl-2 pt-1 font-mono font-semibold">
+      <div className="pl-2 pt-1 font-mono text-xxs font-semibold text-gray-1200">
         {unit}
       </div>
       <ResponsiveContainer width="100%" height="100%">
@@ -72,14 +72,28 @@ export default function MyLineChart({
               Intl.NumberFormat("en-US").format(value)
             }
           />
-          <Line
-            type="linear"
-            dataKey={lineKey}
-            stroke="var(--accent-color-blue)"
-            dot={false}
-            isAnimationActive={false}
-            activeDot={false}
-          />
+          {typeof lineKey === "string" ? (
+            <Line
+              type="monotone"
+              dataKey={lineKey}
+              stroke="var(--accent-color-1)"
+              dot={false}
+              isAnimationActive={false}
+              activeDot={false}
+            />
+          ) : (
+            lineKey.map((key: string, index: number) => (
+              <Line
+                key={key}
+                type="monotone"
+                dataKey={key}
+                stroke={`var(--accent-color-${index + 1})`}
+                dot={false}
+                isAnimationActive={false}
+                activeDot={false}
+              />
+            ))
+          )}
         </LineChart>
       </ResponsiveContainer>
     </div>

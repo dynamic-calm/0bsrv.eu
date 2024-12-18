@@ -15,7 +15,11 @@
   --color-gray-1000: #82827c;
   --color-gray-1100: #63635e;
   --color-gray-1200: #21201c;
-  --accent-color-blue: #0090ff;
+  --accent-color-1: #0090ff;
+  --accent-color-2: #d6409f;
+  --accent-color-3: #29a383;
+  --accent-color-4: #e54d2e;
+  --accent-color-5: #f76b15;
 }
 
 ::selection {
@@ -36,7 +40,11 @@
     --color-gray-1000: #7c7b74;
     --color-gray-1100: #b5b3ad;
     --color-gray-1200: #eeeeec;
-    --accent-color-blue: #0090ff;
+    --accent-color-1: #0090ff;
+    --accent-color-2: #d6409f;
+    --accent-color-3: #29a383;
+    --accent-color-4: #e54d2e;
+    --accent-color-5: #f76b15;
   }
   ::selection {
     background: var(--color-gray-300);
@@ -44,4 +52,9 @@
 }
 body {
   font-family: Arial, Helvetica, sans-serif;
+}
+@layer base {
+  :root {
+    --radius: 0.5rem;
+  }
 }

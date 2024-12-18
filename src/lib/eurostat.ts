@@ -4,29 +4,44 @@ const HOST =
   "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data";
 
 type Inflation = {
-  inflation: number;
-  year: string;
+  time: string;
+  value: number;
+  [key: string]: number | string;
 };
 
 export async function getInflation() {
   const dataSetCode = "prc_hicp_manr";
   const params = new URLSearchParams({
-    geo: "EU",
     unit: "RCH_A",
     coicop: "CP00",
   });
 
   const url = `${HOST}/${dataSetCode}?${params.toString()}`;
   const jst = await JSONstat(url);
+  const timeIds = jst.Dataset(0).Dimension("time").id;
   const data = jst
     .Dataset(0)
-    .toTable()
-    .map((result: unknown[]) => ({
-      inflation: result.at(-1),
-      year: result.at(-2),
-    }));
+    .toTable({ type: "arrobj" })
+    .map((result: { geo: string; value: number }) => ({
+      ...result,
+      [result.geo.toLowerCase()]: result.value,
+    }))
+    .sort((a: { time: string }, b: { time: string }) =>
+      a.time.localeCompare(b.time),
+    );
 
-  return data as Inflation[];
+  const inflation = [];
+  for (const timeId of timeIds) {
+    const dataPerTime = data.reduce(
+      (acc: Inflation, item: Inflation) =>
+        item.time === timeId ? { ...acc, ...item } : acc,
+      {},
+    );
+
+    inflation.push(dataPerTime);
+  }
+
+  return inflation as Inflation[];
 }
 
 type GDPGrowth = {
@@ -197,12 +212,11 @@ export async function getHousePriceIndex() {
 }
 
 type CrimeRate = {
-  crimeRate: number;
+  crime: number;
   year: string;
 };
 
 export async function getCrimeRate() {
-  // https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/ilc_mddw03?format=JSON&geo=EU&unit=PC&hhtyp=TOTAL&incgrp=TOTAL&lang=en
   const dataSetCode = "ilc_mddw03";
   const params = new URLSearchParams({
     geo: "EU",
@@ -218,11 +232,10 @@ export async function getCrimeRate() {
     .Dataset(0)
     .toTable()
     .flatMap((result: unknown[]) => {
-      const crimeRate = result.at(-1);
+      const crime = result.at(-1);
       const year = result.at(-2);
-      return !crimeRate ? [] : [{ crimeRate, year }];
+      return !crime ? [] : [{ crime, year }];
     });
 
-  console.dir(data, { depth: null });
   return data as CrimeRate[];
 }

@@ -2,27 +2,28 @@
   - [x] GDP
   - [x] Unemployment Rate
   - [x] Inflation Rate
+  - [x] House Prices
 - [ ] **Demographic Data**
   - [x] Average population
   - [x] Population Growth Rate
   - [ ] Median Age
   - [x] Number of Deaths Per Year
-- [ ] **Environmental Data**
-  - [ ] CO₂ Emissions per capita
-  - [ ] Renewable Energy Share (%)
-  - [ ] Waste Recycling Rate (%)
-  - [ ] Air Quality Index (AQI)
-- [ ] **Social Indicators**
-  - [ ] Life Expectancy
-  - [ ] Education Levels (% with higher education)
-  - [ ] Employment by Sector (Agriculture, Industry, Services)
-  - [ ] Internet Penetration Rate (%)
 - [ ] **Quality of Living**
   - [ ] Housing Affordability (Rent-to-Income Ratio)
   - [ ] Healthcare Accessibility and Quality Index
   - [ ] Public Transport Quality (index or satisfaction score)
   - [ ] Cost of Living Index
   - [ ] Overall Quality of Life Index (e.g., Eurostat aggregate measures)
+- [ ] **Social Indicators**
+  - [ ] Life Expectancy
+  - [ ] Education Levels (% with higher education)
+  - [ ] Employment by Sector (Agriculture, Industry, Services)
+  - [ ] Internet Penetration Rate (%)
+- [ ] **Environmental Data**
+  - [ ] CO₂ Emissions per capita
+  - [ ] Renewable Energy Share (%)
+  - [ ] Waste Recycling Rate (%)
+  - [ ] Air Quality Index (AQI)
 - [ ] **Violence and Safety**
   - [x] Crime Rate (per 100,000 people)
   - [ ] Homicide Rate (per 100,000 people)
