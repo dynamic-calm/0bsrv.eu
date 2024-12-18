@@ -9,7 +9,7 @@ import {
 } from "@/app/components/ui/select";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
-const countries = [
+const COUNTRIES = [
   "belgium",
   "bulgaria",
   "czechia",
@@ -46,7 +46,6 @@ const countries = [
   "serbia",
   "turkey",
   "kosovo",
-  "united kingdom",
 ].sort();
 
 export function CountrySelector() {
@@ -65,6 +64,11 @@ export function CountrySelector() {
     router.replace(`${pathname}?${params.toString()}`);
   }
 
+  const selectedCountries = [1, 2, 3, 4].map((index) => {
+    const countryKey = `country${index}`;
+    return { country: params.get(countryKey) ?? "none", countryKey };
+  });
+
   return (
     <header className="t sticky top-0 z-20 -ml-2 -mr-2 grid grid-cols-1 gap-x-4 gap-y-2 border-b border-gray-600 bg-gray-200 px-2 py-2 font-mono text-xs sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
       <Select>
@@ -81,6 +85,20 @@ export function CountrySelector() {
       </Select>
       {new Array(4).fill(null).map((_, index) => {
         const countryKey = `country${index + 1}`;
+
+        function filterCountry(country: string) {
+          if (country === "none") return true;
+          for (const selectedCountry of selectedCountries) {
+            if (
+              selectedCountry.country === country &&
+              countryKey !== selectedCountry.countryKey
+            ) {
+              return false;
+            }
+          }
+
+          return true;
+        }
         return (
           <Select
             onValueChange={handleChange}
@@ -100,7 +118,7 @@ export function CountrySelector() {
               </SelectTrigger>
             </div>
             <SelectContent className="font-mono">
-              {["none", ...countries].map((country) => (
+              {["none", ...COUNTRIES].filter(filterCountry).map((country) => (
                 <SelectItem
                   value={`${countryKey}:${country}`}
                   key={`${countryKey}:${country}`}
