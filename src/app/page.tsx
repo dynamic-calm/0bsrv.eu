@@ -4,13 +4,14 @@ import { ChartLoader } from "@/app/components/chart-loader";
 import { Box } from "@/app/components/box";
 import { Title } from "@/app/components/title";
 import { CountrySelector } from "@/app/components/country-selector";
+import { CountrySelectorFallback } from "@/app/components/country-selector-fallback";
 import { getData } from "@/lib/eurostat";
 import { config } from "@/lib/config";
 
 export default function Home() {
   return (
     <main className="mx-auto min-h-screen px-2">
-      <Suspense>
+      <Suspense fallback={<CountrySelectorFallback />}>
         <CountrySelector />
       </Suspense>
       <div className="grid grid-cols-1 gap-2 xl:grid-cols-2">
