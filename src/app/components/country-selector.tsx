@@ -7,7 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/app/components/ui/select";
-import { COUNTRIES } from "@/app/countries";
+import { countries } from "@/lib/config";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 export function CountrySelector() {
@@ -39,7 +39,7 @@ export function CountrySelector() {
             className="size-2 min-w-2"
             style={{ backgroundColor: "var(--accent-color-1)" }}
           />
-          <span className="mr-[3.15rem] lg:mr-0">eu</span>
+          <span className="mr-[3.22rem] lg:mr-0">eu</span>
           <SelectTrigger className="h-7 w-full cursor-not-allowed font-mono text-xs sm:max-w-56">
             <SelectValue placeholder="eu" />
           </SelectTrigger>
@@ -80,7 +80,7 @@ export function CountrySelector() {
               </SelectTrigger>
             </div>
             <SelectContent className="font-mono">
-              {["none", ...COUNTRIES].filter(filterCountry).map((country) => (
+              {["none", ...countries].filter(filterCountry).map((country) => (
                 <SelectItem
                   value={`${countryKey}:${country}`}
                   key={`${countryKey}:${country}`}

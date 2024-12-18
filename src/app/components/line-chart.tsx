@@ -1,5 +1,9 @@
 "use client";
 
+import { countries } from "@/lib/config";
+import { count } from "console";
+import { notFound, useSearchParams } from "next/navigation";
+import { useMemo } from "react";
 import {
   ResponsiveContainer,
   CartesianGrid,
@@ -13,16 +17,39 @@ import {
 export default function MyLineChart({
   data,
   xAxisKey,
-  lineKey,
   unit,
   tickFormatter,
+  hideEu,
 }: {
   data: unknown[];
   xAxisKey: string;
-  lineKey: string | string[];
   unit: string;
-  tickFormatter?: "millions";
+  tickFormatter?: "millions" | "thousands";
+  hideEu?: boolean;
 }) {
+  const searchParams = useSearchParams();
+  const params = new URLSearchParams(searchParams);
+  const lineKey = hideEu ? [""] : ["eu"];
+  if (searchParams) {
+    lineKey.push(params.get("country1") || "none");
+    lineKey.push(params.get("country2") || "none");
+    lineKey.push(params.get("country3") || "none");
+    lineKey.push(params.get("country4") || "none");
+  }
+
+  for (const param of params.values()) {
+    if (!countries.includes(param) && param !== "none") notFound();
+  }
+
+  const formatter = useMemo(() => {
+    if (tickFormatter === "millions") {
+      return (value: number) => String(value / 1000_000).concat("M");
+    }
+    if (tickFormatter === "thousands") {
+      return (value: number) => String(value / 1000).concat("K");
+    }
+  }, [tickFormatter]);
+
   return (
     <div className="flex h-full w-full flex-col">
       <div className="pl-2 pt-1 font-mono text-xxs font-semibold text-gray-1200">
@@ -34,8 +61,8 @@ export default function MyLineChart({
           margin={{
             top: 15,
             right: 40,
-            left: -20,
-            bottom: 50,
+            left: -10,
+            bottom: 15,
           }}
         >
           <CartesianGrid stroke="var(--color-gray-400)" vertical={false} />
@@ -50,11 +77,7 @@ export default function MyLineChart({
           <YAxis
             className="text-xxs"
             axisLine={false}
-            tickFormatter={
-              tickFormatter === "millions"
-                ? (value: number) => String(value / 1000_000).concat("M")
-                : undefined
-            }
+            tickFormatter={formatter}
           />
           <Tooltip
             contentStyle={{
