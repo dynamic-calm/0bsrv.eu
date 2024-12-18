@@ -116,11 +116,7 @@ export default function MyLineChart({
 
           {[...(all === true ? countries : lineKey)].map(
             (key: string, index: number) => {
-              const stroke =
-                index < 4
-                  ? `var(--accent-color-${index + 1})`
-                  : random().toHex();
-
+              const stroke = `var(--accent-color-${index + 1})`;
               return (
                 <Line
                   key={key}
