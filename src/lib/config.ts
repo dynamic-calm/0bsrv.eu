@@ -110,6 +110,8 @@ export const config: Config = {
       params: {
         unit: "PC_GDP",
         sectperf: "TOTAL",
+        startPeriod: "1995-Q1",
+        endPeriod: "2025-Q1",
       },
       euKey: "european union - 27 countries (from 2020)",
       unit: "percent",
