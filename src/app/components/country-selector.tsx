@@ -100,7 +100,7 @@ export default function CountrySelector({
                   key={`${countryKey}:${country}`}
                   className={cn(
                     "cursor-pointer text-xs",
-                    isDrawer && "focus:background-gray-400",
+                    isDrawer && "focus:bg-gray-400",
                   )}
                 >
                   {country}
