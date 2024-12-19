@@ -1,10 +1,10 @@
-import MyLineChart from "@/app/components/line-chart";
+import MyLineChart from "@/components/line-chart";
 import { Suspense } from "react";
-import { ChartLoader } from "@/app/components/chart-loader";
-import { Box } from "@/app/components/box";
-import { Title } from "@/app/components/title";
-import { Header } from "@/app/components/header";
-import { HeaderFallback } from "@/app/components/header-fallback";
+import { ChartLoader } from "@/components/chart-loader";
+import { Box } from "@/components/box";
+import { Title } from "@/components/title";
+import { Header } from "@/components/header";
+import { HeaderFallback } from "@/components/header-fallback";
 import { getData } from "@/lib/eurostat";
 import { config, type DataSet } from "@/lib/config";
 

@@ -1,5 +1,5 @@
 import "./globals.css";
-import Footer from "@/app/components/footer";
+import Footer from "@/components/footer";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "next-themes";
 import type { Metadata } from "next";

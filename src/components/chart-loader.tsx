@@ -1,4 +1,4 @@
-import { Box } from "@/app/components/box";
+import { Box } from "@/components/box";
 import { Loader } from "lucide-react";
 
 export function ChartLoader(props: { label: string; dataSetCode: string }) {

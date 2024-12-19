@@ -1,7 +1,7 @@
 "use client";
 
 import { Drawer } from "vaul";
-import CountrySelector from "@/app/components/country-selector";
+import CountrySelector from "@/components/country-selector";
 import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
 
 export default function VaulDrawer({

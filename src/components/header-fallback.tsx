@@ -1,4 +1,4 @@
-import { Select, SelectTrigger, SelectValue } from "@/app/components/ui/select";
+import { Select, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { MenuIcon } from "lucide-react";
 
 export function HeaderFallback() {

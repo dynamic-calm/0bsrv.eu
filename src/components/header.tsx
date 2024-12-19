@@ -1,8 +1,8 @@
 "use client";
 
 import { MenuIcon } from "lucide-react";
-import VaulDrawer from "@/app/components/drawer";
-import CountrySelector from "@/app/components/country-selector";
+import VaulDrawer from "@/components/drawer";
+import CountrySelector from "@/components/country-selector";
 
 export function Header() {
   return (

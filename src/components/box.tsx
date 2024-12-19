@@ -4,7 +4,7 @@ import {
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/app/components/ui/tooltip";
+} from "@/components/ui/tooltip";
 import { ExternalLink } from "lucide-react";
 
 export function Box({
