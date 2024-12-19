@@ -205,6 +205,8 @@ export const config: Config = {
         unit: "EUR",
         sex: "T",
         indic_il: "MED_E",
+        startPeriod: "2004-Q1",
+        endPeriod: "2024-Q4",
       },
       euKey: "european union - 27 countries (from 2020)",
       unit: "eur",
