@@ -14,7 +14,7 @@ export default function VaulDrawer({
       <Drawer.Trigger asChild>{children}</Drawer.Trigger>
       <Drawer.Portal>
         <Drawer.Overlay className="fixed inset-0 z-[350] bg-black/40" />
-        <Drawer.Content className="fixed bottom-2 right-2 top-2 z-[400] flex w-[310px] outline-none">
+        <Drawer.Content className="fixed bottom-0 right-0 top-0 z-[400] flex w-[310px] outline-none">
           <div className="isolate flex h-full w-full grow flex-col rounded-sm border border-gray-600 bg-gray-200 p-4 text-gray-1200">
             <VisuallyHidden.Root>
               <Drawer.Title className="mb-2 font-medium">
