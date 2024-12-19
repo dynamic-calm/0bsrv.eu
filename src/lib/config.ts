@@ -218,7 +218,7 @@ export const config = {
         nrg_bal: "REN",
       },
       euKey: "european union - 27 countries (from 2020)",
-      debug: true,
+      unit: "percent",
     },
   ],
 } as const;
