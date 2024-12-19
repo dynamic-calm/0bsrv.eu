@@ -10,7 +10,7 @@ import { config } from "@/lib/config";
 
 export default function Home() {
   return (
-    <main className="mx-auto min-h-screen bg-gray-100 px-2">
+    <main className="mx-auto min-h-screen bg-gray-100 px-2 pb-2">
       <Suspense fallback={<CountrySelectorFallback />}>
         <CountrySelector />
       </Suspense>

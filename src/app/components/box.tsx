@@ -29,7 +29,7 @@ export function Box({
               </span>
             </TooltipTrigger>
             <TooltipContent>
-              <p>{description}</p>
+              <p className="text-pretty">{description}</p>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
