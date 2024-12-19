@@ -1,9 +1,10 @@
 import { Select, SelectTrigger, SelectValue } from "@/app/components/ui/select";
+import { MenuIcon } from "lucide-react";
 
-export function CountrySelectorFallback() {
+export function HeaderFallback() {
   return (
     <header className="sticky top-0 z-20 -ml-2 -mr-2 flex items-center justify-center border-b border-gray-600 bg-gray-200 px-2 font-mono text-xs">
-      <div className="mx-auto -ml-2 -mr-2 grid w-full max-w-screen-2xl grid-cols-1 justify-start gap-x-8 gap-y-2 bg-gray-200 px-2 py-2 font-mono text-xs sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+      <div className="mx-auto -ml-2 -mr-2 hidden w-full max-w-screen-2xl grid-cols-1 justify-start gap-x-8 gap-y-2 bg-gray-200 px-2 py-2 font-mono text-xs xl:grid xl:grid-cols-5">
         <Select>
           <div className="flex items-center gap-2">
             <span
@@ -34,6 +35,9 @@ export function CountrySelectorFallback() {
             </Select>
           );
         })}
+      </div>
+      <div className="absolute right-2 xl:hidden">
+        <MenuIcon className="size-5 cursor-pointer text-gray-1000 transition-colors duration-150 hover:text-gray-1200 active:scale-95" />
       </div>
     </header>
   );

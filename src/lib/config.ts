@@ -245,4 +245,5 @@ export const countries = [
   "serbia",
   "türkiye",
   "kosovo*",
+  "united kingdom",
 ].sort();

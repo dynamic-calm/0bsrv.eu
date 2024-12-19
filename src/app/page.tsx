@@ -3,16 +3,16 @@ import { Suspense } from "react";
 import { ChartLoader } from "@/app/components/chart-loader";
 import { Box } from "@/app/components/box";
 import { Title } from "@/app/components/title";
-import { CountrySelector } from "@/app/components/country-selector";
-import { CountrySelectorFallback } from "@/app/components/country-selector-fallback";
+import { Header } from "@/app/components/header";
+import { HeaderFallback } from "@/app/components/header-fallback";
 import { getData } from "@/lib/eurostat";
 import { config } from "@/lib/config";
 
 export default function Home() {
   return (
     <main className="mx-auto min-h-screen bg-gray-100 px-2 pb-2">
-      <Suspense fallback={<CountrySelectorFallback />}>
-        <CountrySelector />
+      <Suspense fallback={<HeaderFallback />}>
+        <Header />
       </Suspense>
       <div className="grid grid-cols-1 gap-2 xl:grid-cols-2 3xl:grid-cols-3">
         <Title>Economic Indicators</Title>

@@ -1,5 +1,3 @@
-"use client";
-
 import {
   Select,
   SelectContent,
@@ -8,9 +6,16 @@ import {
   SelectValue,
 } from "@/app/components/ui/select";
 import { countries } from "@/lib/config";
+import { cn } from "@/lib/utils";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
-export function CountrySelector() {
+export default function CountrySelector({
+  className,
+  isDrawer,
+}: {
+  className?: string;
+  isDrawer?: boolean;
+}) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -32,71 +37,79 @@ export function CountrySelector() {
   });
 
   return (
-    <header className="sticky top-0 z-20 -ml-2 -mr-2 flex items-center justify-center border-b border-gray-600 bg-gray-200 px-2 font-mono text-xs">
-      <div className="mx-auto -ml-2 -mr-2 grid w-full max-w-screen-2xl grid-cols-1 justify-start gap-x-8 gap-y-2 bg-gray-200 px-2 py-2 font-mono text-xs sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-        <Select>
-          <div className="flex items-center gap-2">
-            <span
-              className="size-2 min-w-2"
-              style={{ backgroundColor: "var(--accent-color-1)" }}
-            />
-            <span className="mr-[3.22rem] lg:mr-0">eu</span>
-            <SelectTrigger className="h-7 w-full cursor-not-allowed font-mono text-xs">
-              <SelectValue placeholder="eu" />
-            </SelectTrigger>
-          </div>
-        </Select>
-        {new Array(4).fill(null).map((_, index) => {
-          const countryKey = `country${index + 1}`;
+    <div
+      className={cn(
+        "w-full max-w-screen-2xl space-y-2 py-2 font-mono text-xs xl:mx-auto xl:-ml-2 xl:-mr-2 xl:grid xl:grid-cols-5 xl:gap-x-8 xl:gap-y-2 xl:space-y-0 xl:bg-gray-200 xl:px-2",
+        className,
+      )}
+    >
+      <Select>
+        <div className="flex items-center gap-2">
+          <span
+            className="size-2 min-w-2"
+            style={{ backgroundColor: "var(--accent-color-1)" }}
+          />
+          <span className="mr-[3.22rem] lg:mr-0">eu</span>
+          <SelectTrigger className="h-7 w-full cursor-not-allowed font-mono text-xs">
+            <SelectValue placeholder="eu" />
+          </SelectTrigger>
+        </div>
+      </Select>
+      {new Array(4).fill(null).map((_, index) => {
+        const countryKey = `country${index + 1}`;
 
-          function filterCountry(country: string) {
-            if (country === "none") return true;
-            for (const selectedCountry of selectedCountries) {
-              if (
-                selectedCountry.country === country &&
-                countryKey !== selectedCountry.countryKey
-              ) {
-                return false;
-              }
+        function filterCountry(country: string) {
+          if (country === "none") return true;
+          for (const selectedCountry of selectedCountries) {
+            if (
+              selectedCountry.country === country &&
+              countryKey !== selectedCountry.countryKey
+            ) {
+              return false;
             }
-
-            return true;
           }
-          return (
-            <Select
-              onValueChange={handleChange}
-              key={`country${index + 1}`}
-              defaultValue={`${countryKey}:${params.get(countryKey) ?? "none"}`}
-            >
-              <div className="flex items-center gap-2 text-nowrap">
-                <span
-                  className="size-2 min-w-2"
-                  style={{
-                    backgroundColor: `var(--accent-color-${index + 2})`,
-                  }}
+
+          return true;
+        }
+        return (
+          <Select
+            onValueChange={handleChange}
+            key={`country${index + 1}`}
+            defaultValue={`${countryKey}:${params.get(countryKey) ?? "none"}`}
+          >
+            <div className="flex items-center gap-2 text-nowrap">
+              <span
+                className="size-2 min-w-2"
+                style={{
+                  backgroundColor: `var(--accent-color-${index + 2})`,
+                }}
+              />
+              <span>country {index + 1}</span>
+              <SelectTrigger className="h-7 w-full font-mono text-xs">
+                <SelectValue
+                  placeholder={params.get(`country${index + 1}`) ?? "none"}
                 />
-                <span>country {index + 1}</span>
-                <SelectTrigger className="h-7 w-full font-mono text-xs">
-                  <SelectValue
-                    placeholder={params.get(`country${index + 1}`) ?? "none"}
-                  />
-                </SelectTrigger>
-              </div>
-              <SelectContent className="font-mono">
-                {["none", ...countries].filter(filterCountry).map((country) => (
-                  <SelectItem
-                    value={`${countryKey}:${country}`}
-                    key={`${countryKey}:${country}`}
-                    className="cursor-pointer text-xs"
-                  >
-                    {country}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          );
-        })}
-      </div>
-    </header>
+              </SelectTrigger>
+            </div>
+            <SelectContent
+              className={cn("font-mono", isDrawer && "z-[500] bg-gray-300")}
+            >
+              {["none", ...countries].filter(filterCountry).map((country) => (
+                <SelectItem
+                  value={`${countryKey}:${country}`}
+                  key={`${countryKey}:${country}`}
+                  className={cn(
+                    "cursor-pointer text-xs",
+                    isDrawer && "focus:background-gray-400",
+                  )}
+                >
+                  {country}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        );
+      })}
+    </div>
   );
 }
