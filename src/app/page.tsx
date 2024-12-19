@@ -48,6 +48,15 @@ export default function Home() {
             <Chart {...data} />
           </Suspense>
         ))}
+        <Title>Criminal Data</Title>
+        {config.criminal.map((data) => (
+          <Suspense
+            key={data.dataSetCode.concat(data.label)}
+            fallback={<ChartLoader {...data} />}
+          >
+            <Chart {...data} />
+          </Suspense>
+        ))}
       </div>
     </main>
   );

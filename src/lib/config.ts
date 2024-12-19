@@ -3,6 +3,7 @@ type Config = {
   demography: DataSet[];
   qualityOfLife: DataSet[];
   environment: DataSet[];
+  criminal: DataSet[];
 };
 
 export type DataSet = {
@@ -266,6 +267,57 @@ export const config: Config = {
       euKey: "european union - 27 countries (from 2020)",
       unit: "tonnes",
       hideEu: true,
+    },
+  ],
+
+  criminal: [
+    {
+      label: "Intentional Homicide",
+      description: "Intentional homicides per hundred thousand inhabitants",
+      dataSetCode: "crim_off_cat",
+      params: {
+        unit: "P_HTHAB",
+        iccs: "ICCS0101",
+      },
+      euKey: "european union - 27 countries (from 2020)",
+      hideEu: true,
+      unit: "count",
+    },
+    {
+      label: "Kidnapping",
+      description: "Kidnappings per hundred thousand inhabitants",
+      dataSetCode: "crim_off_cat",
+      params: {
+        unit: "P_HTHAB",
+        iccs: "ICCS020221",
+      },
+      euKey: "european union - 27 countries (from 2020)",
+      hideEu: true,
+      unit: "count",
+    },
+    {
+      label: "Rape",
+      description: "Rapes per hundred thousand inhabitants",
+      dataSetCode: "crim_off_cat",
+      params: {
+        unit: "P_HTHAB",
+        iccs: "ICCS03011",
+      },
+      euKey: "european union - 27 countries (from 2020)",
+      hideEu: true,
+      unit: "count",
+    },
+    {
+      label: "Robbery",
+      description: "Robberies per hundred thousand inhabitants",
+      dataSetCode: "crim_off_cat",
+      params: {
+        unit: "P_HTHAB",
+        iccs: "ICCS0401",
+      },
+      euKey: "european union - 27 countries (from 2020)",
+      hideEu: true,
+      unit: "count",
     },
   ],
 };
