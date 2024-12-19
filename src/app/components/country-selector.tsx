@@ -85,7 +85,7 @@ export default function CountrySelector({
                 }}
               />
               <span>country {index + 1}</span>
-              <SelectTrigger className="h-7 w-full font-mono text-xs">
+              <SelectTrigger className="h-7 w-full font-mono text-xs transition-colors duration-150 hover:bg-gray-300">
                 <SelectValue
                   placeholder={params.get(`country${index + 1}`) ?? "none"}
                 />

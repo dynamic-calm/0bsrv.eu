@@ -1,11 +1,11 @@
 import Link from "next/link";
-import { ExternalLink } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/app/components/ui/tooltip";
+import { ExternalLink } from "lucide-react";
 
 export function Box({
   children,
@@ -42,7 +42,7 @@ export function Box({
           <ExternalLink className="mt-[0.1rem] size-[0.63rem] text-gray-700 transition-colors duration-150 group-hover:text-gray-1200 group-hover:underline" />
         </Link>
       </div>
-      <div className="flex h-52 md:h-72 w-full items-center justify-center">
+      <div className="flex h-52 w-full items-center justify-center md:h-72">
         {children}
       </div>
     </div>
