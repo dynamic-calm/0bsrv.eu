@@ -31,13 +31,10 @@ export default function MyLineChart({
   lineKey.push(params.get("country2") || "none");
   lineKey.push(params.get("country3") || "none");
   lineKey.push(params.get("country4") || "none");
-  const all = Boolean(params.get("all"));
 
-  if (!all) {
-    for (const param of params.values()) {
-      if (!countries.includes(param) && param !== "none") {
-        notFound();
-      }
+  for (const param of params.values()) {
+    if (!countries.includes(param) && param !== "none") {
+      notFound();
     }
   }
 
@@ -81,8 +78,6 @@ export default function MyLineChart({
               borderRadius: "0.125rem",
               border: "1px solid var(--color-gray-600)",
               fontFamily: "var(--font-geist-mono)",
-              overflow: "auto",
-              maxHeight: all === true ? "250px" : "none",
             }}
             itemSorter={(item) => -Number(item.value)}
             cursor={{
@@ -113,23 +108,21 @@ export default function MyLineChart({
             }}
           />
 
-          {[...(all === true ? countries : lineKey)].map(
-            (key: string, index: number) => {
-              const stroke = `var(--accent-color-${index + 1})`;
-              return (
-                <Line
-                  key={key}
-                  type="monotone"
-                  dataKey={key}
-                  stroke={stroke}
-                  dot={false}
-                  activeDot={false}
-                  animationEasing="ease-in-out"
-                  animationDuration={1200}
-                />
-              );
-            },
-          )}
+          {lineKey.map((key: string, index: number) => {
+            const stroke = `var(--accent-color-${index + 1})`;
+            return (
+              <Line
+                key={key}
+                type="monotone"
+                dataKey={key}
+                stroke={stroke}
+                dot={false}
+                activeDot={false}
+                animationEasing="ease-in-out"
+                animationDuration={1200}
+              />
+            );
+          })}
         </LineChart>
       </ResponsiveContainer>
     </div>

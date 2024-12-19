@@ -2,6 +2,7 @@ export const config = {
   economy: [
     {
       label: "Inflation",
+      description: "Inflation rate (annual rate of change)",
       dataSetCode: "prc_hicp_manr",
       params: {
         unit: "RCH_A",
@@ -14,6 +15,8 @@ export const config = {
     {
       label: "GDP Growth",
       dataSetCode: "namq_10_gdp",
+      description:
+        "Gross Domestic Product growth rate (percentage change on previous period)",
       params: {
         unit: "CLV_PCH_PRE",
         s_adj: "SCA",
@@ -27,6 +30,7 @@ export const config = {
     },
     {
       label: "Unemployment",
+      description: "Unemployment rate (percentage of population)",
       dataSetCode: "une_rt_m",
       params: {
         unit: "PC_ACT",
@@ -39,6 +43,8 @@ export const config = {
     },
     {
       label: "NEET Rate",
+      description:
+        "Young people neither in employment nor in education and training (percentage of population)",
       dataSetCode: "lfsi_neet_q",
       params: {
         unit: "PC_POP",
@@ -53,6 +59,8 @@ export const config = {
     },
     {
       label: "House Prices",
+      description:
+        "House price index. Uses 2015 as the index reference period (2015=100)",
       dataSetCode: "prc_hpi_q",
       params: {
         purchase: "TOTAL",
@@ -64,6 +72,8 @@ export const config = {
     },
     {
       label: "Economic Sentiment Indicator",
+      description:
+        "Perceived economic uncertainty, general economic situation, price trends, unemployment...",
       dataSetCode: "ei_bssi_m_r2",
       params: {
         indic: "BS-ESI-I",
@@ -78,6 +88,8 @@ export const config = {
   demography: [
     {
       label: "Population Growth",
+      description:
+        "Population growth rate (percentage change on previous period)",
       dataSetCode: "demo_gind",
       params: {
         indic_de: "GROWRT",
@@ -88,6 +100,7 @@ export const config = {
     },
     {
       unit: "count",
+      description: "Average number of deaths",
       dataSetCode: "demo_gind",
       params: {
         indic_de: "DEATH",
@@ -98,6 +111,7 @@ export const config = {
     },
     {
       label: "Population",
+      description: "Average population",
       dataSetCode: "demo_gind",
       params: {
         indic_de: "AVG",
@@ -108,6 +122,7 @@ export const config = {
     },
     {
       label: "Crime Rate",
+      description: "Crime, violence or vandalism in the area",
       dataSetCode: "ilc_mddw03",
       params: {
         unit: "PC",
@@ -122,7 +137,8 @@ export const config = {
 
   qualityOfLife: [
     {
-      label: "Overall life satisfaction",
+      label: "Life satisfaction",
+      description: "Overall life satisfaction",
       dataSetCode: "ilc_pw01",
       params: {
         unit: "RTG",
@@ -135,6 +151,8 @@ export const config = {
     },
     {
       label: "People at Risk of Poverty",
+      description:
+        "People at risk of poverty, severe material and social deprivation, and/or living in a household with very low work intensity (percentage of population)",
       dataSetCode: "ilc_peps01n",
       params: {
         unit: "PC",
@@ -147,6 +165,7 @@ export const config = {
 
     {
       label: "Income",
+      description: "Median yearly gross income",
       dataSetCode: "ilc_di03",
       params: {
         age: "Y18-64",
@@ -162,6 +181,8 @@ export const config = {
   environment: [
     {
       label: "Greenhouse Gas Emissions",
+      description:
+        "Air emissions accounts for greenhouse gases by NACE Rev. 2 activity",
       unit: "tonnes p/c",
       dataSetCode: "env_ac_aigg_q",
       params: {
@@ -174,6 +195,8 @@ export const config = {
     {
       label: "Electricity consumed by end-users",
       unit: "percent",
+      description:
+        "Percentage change of the current month compared to the lowest value for the corresponding month in the period 2016-2019",
       dataSetCode: "nrg_cb_eim",
       params: {
         unit: "PCH_LV_M_16-19",

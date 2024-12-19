@@ -17,12 +17,7 @@ export default function Home() {
       <div className="grid grid-cols-1 gap-2 xl:grid-cols-2 3xl:grid-cols-3">
         <Title>Economic Indicators</Title>
         {config.economy.map((data) => (
-          <Suspense
-            key={data.dataSetCode}
-            fallback={
-              <ChartLoader label={data.label} dataSetCode={data.dataSetCode} />
-            }
-          >
+          <Suspense key={data.dataSetCode} fallback={<ChartLoader {...data} />}>
             <Chart {...data} />
           </Suspense>
         ))}
@@ -30,9 +25,7 @@ export default function Home() {
         {config.demography.map((data) => (
           <Suspense
             key={data.dataSetCode.concat(data.label)}
-            fallback={
-              <ChartLoader label={data.label} dataSetCode={data.dataSetCode} />
-            }
+            fallback={<ChartLoader {...data} />}
           >
             <Chart {...data} />
           </Suspense>
@@ -41,9 +34,7 @@ export default function Home() {
         {config.qualityOfLife.map((data) => (
           <Suspense
             key={data.dataSetCode.concat(data.label)}
-            fallback={
-              <ChartLoader label={data.label} dataSetCode={data.dataSetCode} />
-            }
+            fallback={<ChartLoader {...data} />}
           >
             <Chart {...data} />
           </Suspense>
@@ -52,9 +43,7 @@ export default function Home() {
         {config.environment.map((data) => (
           <Suspense
             key={data.dataSetCode.concat(data.label)}
-            fallback={
-              <ChartLoader label={data.label} dataSetCode={data.dataSetCode} />
-            }
+            fallback={<ChartLoader {...data} />}
           >
             <Chart {...data} />
           </Suspense>
@@ -73,6 +62,7 @@ type ChartData = {
   hideEu?: boolean;
   tickFormatter?: "millions" | "thousands";
   debug?: boolean;
+  description?: string;
 };
 
 async function Chart({
@@ -83,10 +73,11 @@ async function Chart({
   unit,
   hideEu,
   debug,
+  description,
 }: ChartData) {
   const data = await getData({ dataSetCode, params, euKey, debug });
   return (
-    <Box label={label} dataSetCode={dataSetCode}>
+    <Box label={label} dataSetCode={dataSetCode} description={description}>
       <MyLineChart data={data} xAxisKey="time" unit={unit} hideEu={hideEu} />
     </Box>
   );
