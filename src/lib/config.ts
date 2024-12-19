@@ -71,7 +71,7 @@ export const config = {
       unit: "index",
     },
     {
-      label: "Economic Sentiment Indicator",
+      label: "Economic Sentiment",
       description:
         "Perceived economic uncertainty, general economic situation, price trends, unemployment...",
       dataSetCode: "ei_bssi_m_r2",
@@ -180,7 +180,7 @@ export const config = {
 
   environment: [
     {
-      label: "Greenhouse Gas Emissions",
+      label: "Gas Emissions",
       description:
         "Air emissions accounts for greenhouse gases by NACE Rev. 2 activity",
       unit: "tonnes p/c",
@@ -193,7 +193,7 @@ export const config = {
       euKey: "european union - 27 countries (from 2020)",
     },
     {
-      label: "Electricity consumed by end-users",
+      label: "Electricity Consumed",
       unit: "percent",
       description:
         "Percentage change of the current month compared to the lowest value for the corresponding month in the period 2016-2019",
@@ -204,6 +204,21 @@ export const config = {
         endPeriod: "2024-Q4",
       },
       euKey: "european union - 27 countries (from 2020)",
+    },
+
+    // https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/nrg_ind_ren?format=JSON&unit=PC&nrg_bal=REN&lang=en
+
+    {
+      label: "Renewable Energy Use",
+      description:
+        "Percentage of gross final energy consumption that comes from renewable sources",
+      dataSetCode: "nrg_ind_ren",
+      params: {
+        unit: "PC",
+        nrg_bal: "REN",
+      },
+      euKey: "european union - 27 countries (from 2020)",
+      debug: true,
     },
   ],
 } as const;
