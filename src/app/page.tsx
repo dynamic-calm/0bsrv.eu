@@ -6,7 +6,7 @@ import { Title } from "@/app/components/title";
 import { Header } from "@/app/components/header";
 import { HeaderFallback } from "@/app/components/header-fallback";
 import { getData } from "@/lib/eurostat";
-import { config } from "@/lib/config";
+import { config, type DataSet } from "@/lib/config";
 
 export default function Home() {
   return (
@@ -53,18 +53,6 @@ export default function Home() {
   );
 }
 
-type ChartData = {
-  dataSetCode: string;
-  params: Record<string, string>;
-  euKey: string;
-  label: string;
-  unit: "rate" | "count" | "index" | "percent" | "tonnes p/c" | "eur";
-  hideEu?: boolean;
-  tickFormatter?: "millions" | "thousands";
-  debug?: boolean;
-  description?: string;
-};
-
 async function Chart({
   dataSetCode,
   params,
@@ -74,7 +62,7 @@ async function Chart({
   hideEu,
   debug,
   description,
-}: ChartData) {
+}: DataSet) {
   const data = await getData({ dataSetCode, params, euKey, debug });
   return (
     <Box label={label} dataSetCode={dataSetCode} description={description}>

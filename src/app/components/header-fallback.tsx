@@ -3,7 +3,7 @@ import { MenuIcon } from "lucide-react";
 
 export function HeaderFallback() {
   return (
-    <header className="sticky top-0 z-20 -ml-2 -mr-2 flex items-center justify-center border-b border-gray-600 bg-gray-200 px-2 font-mono text-xs">
+    <header className="sticky top-0 z-20 -ml-2 -mr-2 flex items-center justify-center border-b border-gray-600 bg-gray-200 px-2 font-mono text-xs shadow-sm">
       <div className="mx-auto -ml-2 -mr-2 hidden w-full max-w-screen-2xl grid-cols-1 justify-start gap-x-8 gap-y-2 bg-gray-200 px-2 py-2 font-mono text-xs xl:grid xl:grid-cols-5">
         <Select>
           <div className="flex items-center gap-2">
