@@ -273,7 +273,7 @@ export const config: Config = {
   criminal: [
     {
       label: "Intentional Homicide",
-      description: "Intentional homicides per hundred thousand inhabitants",
+      description: "Police-recorded intentional homicides per hundred thousand inhabitants",
       dataSetCode: "crim_off_cat",
       params: {
         unit: "P_HTHAB",
@@ -285,7 +285,7 @@ export const config: Config = {
     },
     {
       label: "Kidnapping",
-      description: "Kidnappings per hundred thousand inhabitants",
+      description: "Police-recorded kidnappings per hundred thousand inhabitants",
       dataSetCode: "crim_off_cat",
       params: {
         unit: "P_HTHAB",
@@ -297,7 +297,7 @@ export const config: Config = {
     },
     {
       label: "Rape",
-      description: "Rapes per hundred thousand inhabitants",
+      description: "Police-recorded rapes per hundred thousand inhabitants",
       dataSetCode: "crim_off_cat",
       params: {
         unit: "P_HTHAB",
@@ -309,7 +309,7 @@ export const config: Config = {
     },
     {
       label: "Robbery",
-      description: "Robberies per hundred thousand inhabitants",
+      description: "Police-recorded robberies per hundred thousand inhabitants",
       dataSetCode: "crim_off_cat",
       params: {
         unit: "P_HTHAB",
