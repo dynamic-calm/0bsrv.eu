@@ -1,4 +1,3 @@
-import MyLineChart from "@/components/line-chart";
 import { Suspense } from "react";
 import { ChartLoader } from "@/components/chart-loader";
 import { Box } from "@/components/box";
@@ -69,7 +68,6 @@ async function Chart({
   euKey,
   label,
   unit,
-  hideEu,
   debug,
   description,
 }: DataSet) {

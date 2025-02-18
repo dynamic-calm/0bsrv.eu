@@ -42,13 +42,13 @@ const countryNameToISO: Record<string, string> = {
 const LEGEND_STEPS = 5;
 
 function findMostRecentValue(
-  data: Record<string, any>[],
+  data: Record<string, unknown>[],
   countryKey: string,
 ): number | null {
   for (let i = data.length - 1; i >= 0; i--) {
     const value = data[i][countryKey];
-    if (value !== null && value !== undefined && !isNaN(value)) {
-      return value;
+    if (value !== null && value !== undefined && !isNaN(value as number)) {
+      return value as number;
     }
   }
   return null;
@@ -80,7 +80,7 @@ export default function EuropeMapChart({
   data,
   unit,
 }: {
-  data: Record<string, any>[];
+  data: Record<string, unknown>[];
   unit: string;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
