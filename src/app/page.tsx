@@ -76,7 +76,7 @@ async function Chart({
   const data = await getData({ dataSetCode, params, euKey, debug });
   return (
     <Box label={label} dataSetCode={dataSetCode} description={description}>
-      <EuropeMapChart data={data} />
+      <EuropeMapChart data={data} unit={unit} />
       {/* <MyLineChart data={data} xAxisKey="time" unit={unit} hideEu={hideEu} /> */}
     </Box>
   );

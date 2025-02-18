@@ -39,6 +39,8 @@ const countryNameToISO: Record<string, string> = {
   türkiye: "TR",
 };
 
+const LEGEND_STEPS = 5;
+
 function findMostRecentValue(
   data: Record<string, any>[],
   countryKey: string,
@@ -52,11 +54,15 @@ function findMostRecentValue(
   return null;
 }
 
-// Custom color scale function
 function createColorScale(min: number, max: number) {
   const accentNumber = Math.floor(Math.random() * 5) + 1;
   const baseColor = "var(--color-gray-100)";
   const accentColor = `var(--accent-color-${accentNumber})`;
+
+  const colors = Array.from({ length: LEGEND_STEPS }, (_, i) => {
+    const normalized = i / (LEGEND_STEPS - 1);
+    return `color-mix(in srgb, ${baseColor}, ${accentColor} ${Math.min(normalized * 100 + 20, 100)}%)`;
+  });
 
   return {
     scale: (value: number) => {
@@ -64,6 +70,7 @@ function createColorScale(min: number, max: number) {
       const normalized = (value - min) / (max - min);
       return `color-mix(in srgb, ${baseColor}, ${accentColor} ${Math.min(normalized * 100 + 20, 100)}%)`;
     },
+    colors,
     baseColor,
     accentColor,
   };
@@ -71,8 +78,10 @@ function createColorScale(min: number, max: number) {
 
 export default function EuropeMapChart({
   data,
+  unit,
 }: {
   data: Record<string, any>[];
+  unit: string;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -97,13 +106,29 @@ export default function EuropeMapChart({
 
     const minValue = Math.min(...validValues);
     const maxValue = Math.max(...validValues);
-    const { scale: colorScale } = createColorScale(minValue, maxValue);
+    const { scale: colorScale, colors } = createColorScale(minValue, maxValue);
 
     const plot = Plot.plot({
       projection: {
         type: "conic-conformal",
         domain: europeGeoJSON,
         center: [25.19, 57],
+      },
+      color: {
+        type: "quantize",
+        domain: Array.from(
+          { length: LEGEND_STEPS - 1 },
+          (_, i) => minValue + ((maxValue - minValue) * (i + 1)) / LEGEND_STEPS,
+        ),
+        range: colors,
+        label: unit,
+        legend: true,
+        tickFormat: (d: number) =>
+          new Intl.NumberFormat("en-US", {
+            notation: "compact",
+            maximumFractionDigits: 1,
+            minimumFractionDigits: 1,
+          }).format(d),
       },
       style: {
         backgroundColor: "transparent",
@@ -134,7 +159,7 @@ export default function EuropeMapChart({
     <div className="h-full w-full">
       <div
         ref={containerRef}
-        className="flex h-full w-full items-center justify-center"
+        className="flex h-full w-full items-start justify-start pl-2"
       />
     </div>
   );
