@@ -55,14 +55,14 @@ function findMostRecentValue(
 // Custom color scale function
 function createColorScale(min: number, max: number) {
   const accentNumber = Math.floor(Math.random() * 5) + 1;
-  const baseColor = "var(--color-gray-300)";
+  const baseColor = "var(--color-gray-100)";
   const accentColor = `var(--accent-color-${accentNumber})`;
 
   return {
     scale: (value: number) => {
-      if (value === undefined || value === null) return "var(--color-gray-400)";
+      if (value === undefined || value === null) return "var(--color-gray-300)";
       const normalized = (value - min) / (max - min);
-      return `color-mix(in srgb, ${baseColor}, ${accentColor} ${normalized * 100}%)`;
+      return `color-mix(in srgb, ${baseColor}, ${accentColor} ${Math.min(normalized * 100 + 20, 100)}%)`;
     },
     baseColor,
     accentColor,
@@ -97,11 +97,7 @@ export default function EuropeMapChart({
 
     const minValue = Math.min(...validValues);
     const maxValue = Math.max(...validValues);
-    const {
-      scale: colorScale,
-      baseColor,
-      accentColor,
-    } = createColorScale(minValue, maxValue);
+    const { scale: colorScale } = createColorScale(minValue, maxValue);
 
     const plot = Plot.plot({
       projection: {
@@ -119,8 +115,6 @@ export default function EuropeMapChart({
             const value = valueMap.get(d.id);
             return colorScale(value);
           },
-          stroke: "var(--color-gray-600)",
-          strokeWidth: 0.5,
           title: (d) => {
             const value = valueMap.get(d.id);
             if (value === null || value === undefined) {
@@ -129,33 +123,6 @@ export default function EuropeMapChart({
             return `${d.properties.name}: ${value.toFixed(2)}`;
           },
         }),
-        // Legend text - max value
-        Plot.text([[630, 25]], {
-          text: [`${maxValue.toFixed(1)}`],
-          fill: "var(--color-gray-1200)",
-          fontSize: 10,
-        }),
-        // Legend text - min value
-        Plot.text([[630, 115]], {
-          text: [`${minValue.toFixed(1)}`],
-          fill: "var(--color-gray-1200)",
-          fontSize: 10,
-        }),
-        // Legend text - unit
-        Plot.text([[630, 70]], {
-          text: [data[data.length - 1].unit || "Value"],
-          fill: "var(--color-gray-1200)",
-          fontSize: 10,
-        }),
-        // Legend box with gradient
-        // Plot.frame({
-        //   stroke: "var(--color-gray-600)",
-        //   fill: `linear-gradient(to bottom, ${accentColor}, ${baseColor})`,
-        //   x1: 600,
-        //   y1: 20,
-        //   x2: 620,
-        //   y2: 120,
-        // }),
       ],
     });
 
