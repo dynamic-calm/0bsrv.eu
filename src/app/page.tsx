@@ -1,4 +1,3 @@
-import MyLineChart from "@/components/line-chart";
 import { Suspense } from "react";
 import { ChartLoader } from "@/components/chart-loader";
 import { Box } from "@/components/box";
@@ -7,6 +6,7 @@ import { Header } from "@/components/header";
 import { HeaderFallback } from "@/components/header-fallback";
 import { getData } from "@/lib/eurostat";
 import { config, type DataSet } from "@/lib/config";
+import EuropeMapChart from "@/components/map";
 
 export default function Home() {
   return (
@@ -68,14 +68,14 @@ async function Chart({
   euKey,
   label,
   unit,
-  hideEu,
   debug,
   description,
 }: DataSet) {
   const data = await getData({ dataSetCode, params, euKey, debug });
   return (
     <Box label={label} dataSetCode={dataSetCode} description={description}>
-      <MyLineChart data={data} xAxisKey="time" unit={unit} hideEu={hideEu} />
+      <EuropeMapChart data={data} unit={unit} />
+      {/* <MyLineChart data={data} xAxisKey="time" unit={unit} hideEu={hideEu} /> */}
     </Box>
   );
 }

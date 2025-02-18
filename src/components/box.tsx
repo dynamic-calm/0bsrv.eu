@@ -42,7 +42,7 @@ export function Box({
           <ExternalLink className="mt-[0.1rem] size-[0.63rem] text-gray-700 transition-colors duration-150 group-hover:text-gray-1200 group-hover:underline" />
         </Link>
       </div>
-      <div className="flex h-52 w-full items-center justify-center md:h-72">
+      <div className="flex h-fit w-full items-center justify-center md:h-fit">
         {children}
       </div>
     </div>
