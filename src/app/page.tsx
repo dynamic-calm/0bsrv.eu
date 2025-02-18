@@ -7,6 +7,7 @@ import { Header } from "@/components/header";
 import { HeaderFallback } from "@/components/header-fallback";
 import { getData } from "@/lib/eurostat";
 import { config, type DataSet } from "@/lib/config";
+import EuropeMapChart from "@/components/map";
 
 export default function Home() {
   return (
@@ -75,7 +76,8 @@ async function Chart({
   const data = await getData({ dataSetCode, params, euKey, debug });
   return (
     <Box label={label} dataSetCode={dataSetCode} description={description}>
-      <MyLineChart data={data} xAxisKey="time" unit={unit} hideEu={hideEu} />
+      <EuropeMapChart data={data} />
+      {/* <MyLineChart data={data} xAxisKey="time" unit={unit} hideEu={hideEu} /> */}
     </Box>
   );
 }
