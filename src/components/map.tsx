@@ -267,7 +267,7 @@ function formatTimeLabel(time?: string) {
         month: "short",
         year: "numeric",
       });
-    } catch (e) {
+    } catch {
       console.warn("Invalid date format:", time);
       return time;
     }
