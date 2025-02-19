@@ -4,7 +4,7 @@ import { Box } from "@/components/box";
 import { Title } from "@/components/title";
 import { getData } from "@/lib/eurostat";
 import { config, type DataSet } from "@/lib/config";
-import EuropeMapChart from "@/components/map";
+import EurostatMapChart from "@/components/map";
 
 export default function Home() {
   return (
@@ -72,7 +72,7 @@ async function Chart({
   const data = await getData({ dataSetCode, params, euKey, debug });
   return (
     <Box label={label} dataSetCode={dataSetCode} description={description}>
-      <EuropeMapChart data={data} unit={unit} />
+      <EurostatMapChart data={data} unit={unit} />
     </Box>
   );
 }
