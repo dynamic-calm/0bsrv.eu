@@ -2,8 +2,6 @@ import { Suspense } from "react";
 import { ChartLoader } from "@/components/chart-loader";
 import { Box } from "@/components/box";
 import { Title } from "@/components/title";
-import { Header } from "@/components/header";
-import { HeaderFallback } from "@/components/header-fallback";
 import { getData } from "@/lib/eurostat";
 import { config, type DataSet } from "@/lib/config";
 import EuropeMapChart from "@/components/map";
@@ -11,9 +9,9 @@ import EuropeMapChart from "@/components/map";
 export default function Home() {
   return (
     <main className="mx-auto min-h-screen bg-gray-100 px-2 pb-2">
-      <Suspense fallback={<HeaderFallback />}>
+      {/* <Suspense fallback={<HeaderFallback />}>
         <Header />
-      </Suspense>
+      </Suspense> */}
       <div className="grid grid-cols-2 gap-2 xl:grid-cols-3 3xl:grid-cols-4">
         <Title>Economic Indicators</Title>
         {config.economy.map((data) => (
@@ -75,7 +73,6 @@ async function Chart({
   return (
     <Box label={label} dataSetCode={dataSetCode} description={description}>
       <EuropeMapChart data={data} unit={unit} />
-      {/* <MyLineChart data={data} xAxisKey="time" unit={unit} hideEu={hideEu} /> */}
     </Box>
   );
 }
