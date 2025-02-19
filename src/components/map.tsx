@@ -2,7 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import * as Plot from "@observablehq/plot";
+import * as Slider from "@radix-ui/react-slider";
 import europeGeoJSON from "@/geojson/europe.geojson";
+import * as d3 from "d3";
 
 const countryNameToISO: Record<string, string> = {
   belgium: "BE",
@@ -55,6 +57,16 @@ export default function EurostatMapChart({ data, unit }: Props) {
   const mapRef = useRef<HTMLDivElement>(null);
   const timelineRef = useRef<HTMLDivElement>(null);
   const [selectedTimeIndex, setSelectedTimeIndex] = useState(data?.length - 1);
+  const set = new Set(
+    data.flatMap((d) =>
+      Object.keys(countryNameToISO)
+        .map((c) => d[c])
+        .filter((c): c is number => typeof c === "number"),
+    ),
+  );
+
+  const max = Math.max(...set);
+  const min = Math.min(...set);
 
   useEffect(() => {
     if (!data || !mapRef.current || !timelineRef.current) return;
@@ -76,27 +88,30 @@ export default function EurostatMapChart({ data, unit }: Props) {
       }
     });
 
-    const minValue = Math.min(...validValues);
-    const maxValue = Math.max(...validValues);
-    const { scale: colorScale, colors } = createColorScale(minValue, maxValue);
+    const { scale: colorScale, colors } = createColorScale(min, max);
 
     // Create map
     const mapPlot = Plot.plot({
-      projection: {
-        type: "conic-conformal",
-        domain: europeGeoJSON,
-        center: [25.19, 57],
+      projection: ({ width, height }) => {
+        return (
+          d3
+            .geoConicConformal()
+            // .parallels([0, 60])
+            .center([37, 47]) // Adjust latitude (second number) to move map up/down
+            .scale(height * 1.3)
+        ); // Adjust multiplier to zoom in/out
+        // .translate([width / 2, height / 2.2]); // Adjust divisor in height to move up/down
       },
       color: {
         type: "quantize",
         domain: Array.from(
           { length: LEGEND_STEPS - 1 },
-          (_, i) => minValue + ((maxValue - minValue) * (i + 1)) / LEGEND_STEPS,
+          (_, i) => min + ((max - min) * (i + 1)) / LEGEND_STEPS,
         ),
         range: colors,
         label: unit,
         legend: true,
-        tickFormat: (d: number) => formatValue(d, unit),
+        tickFormat: (d: number) => formatValue(d, unit, { floor: true }),
       },
       style: {
         backgroundColor: "transparent",
@@ -137,7 +152,7 @@ export default function EurostatMapChart({ data, unit }: Props) {
 
     // Create timeline
     const timelinePlot = Plot.plot({
-      height: 150,
+      height: 100,
       style: {
         backgroundColor: "transparent",
       },
@@ -152,7 +167,7 @@ export default function EurostatMapChart({ data, unit }: Props) {
           y: "average",
           fill: (d) =>
             d.index === selectedTimeIndex
-              ? "var(--color-gray-1100)"
+              ? "var(--color-gray-1200)"
               : "var(--color-gray-600)",
           r: (d) => (d.index === selectedTimeIndex ? 6 : 4),
         }),
@@ -167,48 +182,48 @@ export default function EurostatMapChart({ data, unit }: Props) {
       grid: true,
     });
 
-    const controller = new AbortController();
-    timelinePlot.addEventListener(
-      "click",
-      (event: MouseEvent | Event) => {
-        const mouseEvent = event as MouseEvent;
-        const bounds = timelinePlot.getBoundingClientRect();
-        const x = mouseEvent.clientX - bounds.left;
-        const width = bounds.width;
-        const clickedIndex = Math.round((x / width) * (data.length - 1));
-        setSelectedTimeIndex(
-          Math.max(0, Math.min(clickedIndex, data.length - 1)),
-        );
-      },
-      { signal: controller.signal },
-    );
-
     mapRef.current.append(mapPlot);
     timelineRef.current.append(timelinePlot);
 
     return () => {
       mapPlot.remove();
       timelinePlot.remove();
-      controller.abort();
     };
   }, [data, selectedTimeIndex]);
 
   return (
-    <div className="flex h-full w-full flex-col gap-4">
+    <div className="flex h-full w-full flex-col">
       <div
         ref={mapRef}
         className="flex h-full w-full cursor-crosshair items-start justify-start pl-2"
       />
       <div
         ref={timelineRef}
-        className="flex w-full cursor-pointer items-start justify-start"
+        className="flex w-full items-start justify-start mt-8"
       />
+      <div className="flex w-full items-center justify-center px-2 pb-1">
+        <Slider.Root
+          className="relative flex h-5 w-full touch-none select-none items-center px-1"
+          value={[selectedTimeIndex]}
+          max={data.length - 1}
+          step={1}
+          onValueChange={(value) => setSelectedTimeIndex(value[0])}
+        >
+          <Slider.Track className="relative h-1 grow cursor-pointer rounded-full bg-gray-300">
+            <Slider.Range className="absolute h-full rounded-full bg-gray-500" />
+          </Slider.Track>
+          <Slider.Thumb
+            className="block h-3 w-3 cursor-grab rounded-full bg-gray-1200 active:cursor-grabbing"
+            aria-label="Time"
+          />
+        </Slider.Root>
+      </div>
     </div>
   );
 }
 
 function createColorScale(min: number, max: number) {
-  const base = "var(--color-gray-400)";
+  const base = "var(--color-gray-300)";
   const accent = "var(--color-gray-1200)";
 
   const colors = Array.from({ length: LEGEND_STEPS }, (_, i) => {
@@ -218,7 +233,7 @@ function createColorScale(min: number, max: number) {
 
   return {
     scale: (value: number) => {
-      if (value === undefined || value === null) return "var(--color-gray-200)";
+      if (value === undefined || value === null) return "var(--color-gray-100)";
       const normalized = (value - min) / (max - min);
       return `color-mix(in srgb, ${base}, ${accent} ${Math.min(normalized * 100, 100)}%)`;
     },
@@ -228,12 +243,16 @@ function createColorScale(min: number, max: number) {
   };
 }
 
-function formatValue(value: number, unit: string) {
+function formatValue(value: number, unit: string, opts?: { floor?: boolean }) {
   const formatter = new Intl.NumberFormat("en-US", {
     maximumFractionDigits: 2,
     minimumFractionDigits: unit === "percent" ? 1 : 0,
     notation: "compact",
   });
+
+  if (opts?.floor) {
+    value = Math.floor(value);
+  }
 
   switch (unit) {
     case "percent":
@@ -261,7 +280,6 @@ function formatTimeLabel(time?: string) {
     return `Q${quarter} ${year}`;
   }
   if (time.length === 7) {
-    // YYYY-MM
     try {
       return new Date(time + "-01").toLocaleDateString("en-US", {
         month: "short",
@@ -272,7 +290,7 @@ function formatTimeLabel(time?: string) {
       return time;
     }
   }
-  return time; // YYYY
+  return time;
 }
 
 function parseTimeString(timeStr: string): Date {

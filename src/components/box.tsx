@@ -24,7 +24,7 @@ export function Box({
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger>
-              <span className="block cursor-help font-sans text-lg font-bold tracking-tight">
+              <span className="block cursor-help font-sans text-2xl font-bold tracking-tight">
                 {label}
               </span>
             </TooltipTrigger>
