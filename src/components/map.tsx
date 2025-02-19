@@ -134,10 +134,10 @@ export default function EurostatMapChart({ data, unit }: Props) {
           countryValues.length,
       };
     });
+
     // Create timeline
     const timelinePlot = Plot.plot({
       height: 150,
-      marginBottom: 40,
       style: {
         backgroundColor: "transparent",
       },
@@ -165,20 +165,6 @@ export default function EurostatMapChart({ data, unit }: Props) {
         }),
       ],
       grid: true,
-      x: {
-        type: "utc", // Use UTC time scale
-        tickRotate: -45,
-        tickFormat: (d: Date) =>
-          formatTimeLabel(
-            timelineData.find((td) => td.time.getTime() === d.getTime())
-              ?.timeLabel ?? "",
-          ),
-      },
-      y: {
-        type: "linear",
-        label: `Average ${unit}`,
-        tickFormat: (d: number) => formatValue(d, unit),
-      },
     });
 
     const controller = new AbortController();
@@ -215,7 +201,7 @@ export default function EurostatMapChart({ data, unit }: Props) {
       />
       <div
         ref={timelineRef}
-        className="flex w-full items-start justify-start pl-2"
+        className="flex w-full items-start justify-start"
       />
     </div>
   );
@@ -240,18 +226,6 @@ function createColorScale(min: number, max: number) {
     baseColor: base,
     accentColor: accent,
   };
-}
-function parseTimeString(timeStr: string): Date {
-  if (timeStr.includes("Q")) {
-    const [year, quarter] = timeStr.split("-Q");
-    const month = (parseInt(quarter) - 1) * 3;
-    return new Date(parseInt(year), month);
-  }
-  if (timeStr.length === 7) {
-    // YYYY-MM
-    return new Date(timeStr + "-01");
-  }
-  return new Date(timeStr); // YYYY
 }
 
 function formatValue(value: number, unit: string) {
@@ -279,18 +253,38 @@ function formatValue(value: number, unit: string) {
   }
 }
 
-function formatTimeLabel(time: string) {
-  // Handle different time formats (YYYY-Q#, YYYY-MM, YYYY)
+function formatTimeLabel(time?: string) {
+  if (!time) return "";
+
   if (time.includes("Q")) {
     const [year, quarter] = time.split("-Q");
     return `Q${quarter} ${year}`;
   }
   if (time.length === 7) {
     // YYYY-MM
-    return new Date(time + "-01").toLocaleDateString("en-US", {
-      month: "short",
-      year: "numeric",
-    });
+    try {
+      return new Date(time + "-01").toLocaleDateString("en-US", {
+        month: "short",
+        year: "numeric",
+      });
+    } catch (e) {
+      console.warn("Invalid date format:", time);
+      return time;
+    }
   }
   return time; // YYYY
+}
+
+function parseTimeString(timeStr: string): Date {
+  if (timeStr.includes("Q")) {
+    const [year, quarter] = timeStr.split("-Q");
+    const month = (parseInt(quarter) - 1) * 3;
+    return new Date(parseInt(year), month);
+  }
+  // For yearly data
+  if (timeStr.length === 4) {
+    return new Date(parseInt(timeStr), 0);
+  }
+  // For YYYY-MM format
+  return new Date(timeStr + "-01");
 }
