@@ -71,7 +71,6 @@ export default function EurostatMapChart({ data, unit }: Props) {
   useEffect(() => {
     if (!data || !mapRef.current || !timelineRef.current) return;
 
-    // Clear existing plots
     if (mapRef.current.firstChild) mapRef.current.firstChild.remove();
     if (timelineRef.current.firstChild) timelineRef.current.firstChild.remove();
 
@@ -79,7 +78,6 @@ export default function EurostatMapChart({ data, unit }: Props) {
     const validValues: number[] = [];
     const valueMap = new Map();
 
-    // Process values for the selected time point
     Object.entries(countryNameToISO).forEach(([countryName, isoCode]) => {
       const value = timePoint[countryName];
       if (typeof value === "number" && !isNaN(value)) {
@@ -93,14 +91,10 @@ export default function EurostatMapChart({ data, unit }: Props) {
     // Create map
     const mapPlot = Plot.plot({
       projection: ({ height }) => {
-        return (
-          d3
-            .geoConicConformal()
-            // .parallels([0, 60])
-            .center([37, 47]) // Adjust latitude (second number) to move map up/down
-            .scale(height * 1.3)
-        ); // Adjust multiplier to zoom in/out
-        // .translate([width / 2, height / 2.2]); // Adjust divisor in height to move up/down
+        return d3
+          .geoConicConformal()
+          .center([37, 47])
+          .scale(height * 1.3);
       },
       color: {
         type: "quantize",
@@ -142,8 +136,8 @@ export default function EurostatMapChart({ data, unit }: Props) {
 
       return {
         index,
-        time: parseTimeString(d.time), // Convert to Date object
-        timeLabel: d.time, // Keep original string for labels
+        time: parseTimeString(d.time),
+        timeLabel: d.time,
         average:
           countryValues.reduce((sum, val) => sum + val, 0) /
           countryValues.length,
@@ -299,10 +293,8 @@ function parseTimeString(timeStr: string): Date {
     const month = (parseInt(quarter) - 1) * 3;
     return new Date(parseInt(year), month);
   }
-  // For yearly data
   if (timeStr.length === 4) {
     return new Date(parseInt(timeStr), 0);
   }
-  // For YYYY-MM format
   return new Date(timeStr + "-01");
 }
