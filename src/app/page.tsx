@@ -4,16 +4,15 @@ import { Box } from "@/components/box";
 import { Title } from "@/components/title";
 import { getData } from "@/lib/eurostat";
 import { config, type DataSet } from "@/lib/config";
+import { Header } from "@/components/header";
 import EurostatMapChart from "@/components/map";
 
 export default function Home() {
   return (
     <main className="mx-auto min-h-screen bg-gray-100 px-2 pb-2">
-      {/* <Suspense fallback={<HeaderFallback />}>
-        <Header />
-      </Suspense> */}
+      <Header />
       <div className="grid grid-cols-1 gap-2 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-        <Title>Economic Indicators</Title>
+        <Title className="mt-20">Economic Indicators</Title>
         {config.economy.map((data) => (
           <Suspense key={data.dataSetCode} fallback={<ChartLoader {...data} />}>
             <Chart {...data} />
