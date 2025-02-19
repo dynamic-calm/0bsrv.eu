@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as Plot from "@observablehq/plot";
 import europeGeoJSON from "@/geojson/europe.geojson";
 
@@ -41,74 +41,47 @@ const countryNameToISO: Record<string, string> = {
 
 const LEGEND_STEPS = 5;
 
-function findMostRecentValue(
-  data: Record<string, unknown>[],
-  countryKey: string,
-): number | null {
-  for (let i = data.length - 1; i >= 0; i--) {
-    const value = data[i][countryKey];
-    if (value !== null && value !== undefined && !isNaN(value as number)) {
-      return value as number;
-    }
-  }
-  return null;
+interface EurostatData {
+  time: string;
+  [country: string]: number | string;
 }
 
-function createColorScale(min: number, max: number) {
-  const accentNumber = Math.floor(Math.random() * 5) + 1;
-  const baseColor = "var(--color-gray-100)";
-  const accentColor = `var(--accent-color-${accentNumber})`;
-
-  const colors = Array.from({ length: LEGEND_STEPS }, (_, i) => {
-    const normalized = i / (LEGEND_STEPS - 1);
-    return `color-mix(in srgb, ${baseColor}, ${accentColor} ${Math.min(normalized * 100 + 20, 100)}%)`;
-  });
-
-  return {
-    scale: (value: number) => {
-      if (value === undefined || value === null) return "var(--color-gray-300)";
-      const normalized = (value - min) / (max - min);
-      return `color-mix(in srgb, ${baseColor}, ${accentColor} ${Math.min(normalized * 100 + 20, 100)}%)`;
-    },
-    colors,
-    baseColor,
-    accentColor,
-  };
-}
-
-export default function EuropeMapChart({
-  data,
-  unit,
-}: {
-  data: Record<string, unknown>[];
+interface Props {
+  data: EurostatData[];
   unit: string;
-}) {
-  const containerRef = useRef<HTMLDivElement>(null);
+}
+
+export default function EurostatMapChart({ data, unit }: Props) {
+  const mapRef = useRef<HTMLDivElement>(null);
+  const timelineRef = useRef<HTMLDivElement>(null);
+  const [selectedTimeIndex, setSelectedTimeIndex] = useState(data?.length - 1);
 
   useEffect(() => {
-    if (!data || !containerRef.current) return;
+    if (!data || !mapRef.current || !timelineRef.current) return;
 
-    const valueMap = new Map();
+    // Clear existing plots
+    if (mapRef.current.firstChild) mapRef.current.firstChild.remove();
+    if (timelineRef.current.firstChild) timelineRef.current.firstChild.remove();
+
+    const timePoint = data[selectedTimeIndex];
     const validValues: number[] = [];
+    const valueMap = new Map();
 
-    Object.keys(countryNameToISO).forEach((countryName) => {
-      const value = findMostRecentValue(data, countryName);
-      if (value !== null) {
-        const isoCode = countryNameToISO[countryName];
+    // Process values for the selected time point
+    Object.entries(countryNameToISO).forEach(([countryName, isoCode]) => {
+      const value = timePoint[countryName];
+      if (typeof value === "number" && !isNaN(value)) {
         valueMap.set(isoCode, value);
         validValues.push(value);
       }
     });
 
-    if (containerRef.current.firstChild) {
-      containerRef.current.firstChild.remove();
-    }
-
     const minValue = Math.min(...validValues);
     const maxValue = Math.max(...validValues);
     const { scale: colorScale, colors } = createColorScale(minValue, maxValue);
 
-    const plot = Plot.plot({
+    // Create map
+    const mapPlot = Plot.plot({
       projection: {
         type: "conic-conformal",
         domain: europeGeoJSON,
@@ -123,12 +96,7 @@ export default function EuropeMapChart({
         range: colors,
         label: unit,
         legend: true,
-        tickFormat: (d: number) =>
-          new Intl.NumberFormat("en-US", {
-            notation: "compact",
-            maximumFractionDigits: 1,
-            minimumFractionDigits: 1,
-          }).format(d),
+        tickFormat: (d: number) => formatValue(d, unit),
       },
       style: {
         backgroundColor: "transparent",
@@ -145,22 +113,184 @@ export default function EuropeMapChart({
             if (value === null || value === undefined) {
               return `${d.properties.name}: No data available`;
             }
-            return `${d.properties.name}: ${value.toFixed(2)}`;
+            return `${d.properties.name}: ${formatValue(value, unit)}`;
           },
         }),
       ],
     });
 
-    containerRef.current.append(plot);
-    return () => plot.remove();
-  }, [data]);
+    // Prepare timeline data
+    const timelineData = data.map((d, index) => {
+      const countryValues = Object.entries(countryNameToISO)
+        .map(([country]) => d[country])
+        .filter((val): val is number => typeof val === "number" && !isNaN(val));
+
+      return {
+        index,
+        time: parseTimeString(d.time), // Convert to Date object
+        timeLabel: d.time, // Keep original string for labels
+        average:
+          countryValues.reduce((sum, val) => sum + val, 0) /
+          countryValues.length,
+      };
+    });
+    // Create timeline
+    const timelinePlot = Plot.plot({
+      height: 150,
+      marginBottom: 40,
+      style: {
+        backgroundColor: "transparent",
+      },
+      marks: [
+        Plot.line(timelineData, {
+          x: "time",
+          y: "average",
+          stroke: "var(--color-gray-1000)",
+        }),
+        Plot.dot(timelineData, {
+          x: "time",
+          y: "average",
+          fill: (d) =>
+            d.index === selectedTimeIndex
+              ? "var(--color-gray-1100)"
+              : "var(--color-gray-600)",
+          r: (d) => (d.index === selectedTimeIndex ? 6 : 4),
+        }),
+        Plot.text(timelineData, {
+          x: "time",
+          y: "average",
+          text: (d) =>
+            d.index === selectedTimeIndex ? formatTimeLabel(d.timeLabel) : "",
+          dy: -10,
+        }),
+      ],
+      grid: true,
+      x: {
+        type: "utc", // Use UTC time scale
+        tickRotate: -45,
+        tickFormat: (d: Date) =>
+          formatTimeLabel(
+            timelineData.find((td) => td.time.getTime() === d.getTime())
+              ?.timeLabel ?? "",
+          ),
+      },
+      y: {
+        type: "linear",
+        label: `Average ${unit}`,
+        tickFormat: (d: number) => formatValue(d, unit),
+      },
+    });
+
+    const controller = new AbortController();
+    timelinePlot.addEventListener(
+      "click",
+      (event: MouseEvent | Event) => {
+        const mouseEvent = event as MouseEvent;
+        const bounds = timelinePlot.getBoundingClientRect();
+        const x = mouseEvent.clientX - bounds.left;
+        const width = bounds.width;
+        const clickedIndex = Math.round((x / width) * (data.length - 1));
+        setSelectedTimeIndex(
+          Math.max(0, Math.min(clickedIndex, data.length - 1)),
+        );
+      },
+      { signal: controller.signal },
+    );
+
+    mapRef.current.append(mapPlot);
+    timelineRef.current.append(timelinePlot);
+
+    return () => {
+      mapPlot.remove();
+      timelinePlot.remove();
+      controller.abort();
+    };
+  }, [data, selectedTimeIndex]);
 
   return (
-    <div className="h-full w-full">
+    <div className="flex h-full w-full flex-col gap-4">
       <div
-        ref={containerRef}
+        ref={mapRef}
         className="flex h-full w-full items-start justify-start pl-2"
+      />
+      <div
+        ref={timelineRef}
+        className="flex w-full items-start justify-start pl-2"
       />
     </div>
   );
+}
+
+function createColorScale(min: number, max: number) {
+  const base = "var(--color-gray-400)";
+  const accent = "var(--color-gray-1200)";
+
+  const colors = Array.from({ length: LEGEND_STEPS }, (_, i) => {
+    const normalized = i / (LEGEND_STEPS - 1);
+    return `color-mix(in srgb, ${base}, ${accent} ${normalized * 100}%)`;
+  });
+
+  return {
+    scale: (value: number) => {
+      if (value === undefined || value === null) return "var(--color-gray-200)";
+      const normalized = (value - min) / (max - min);
+      return `color-mix(in srgb, ${base}, ${accent} ${Math.min(normalized * 100, 100)}%)`;
+    },
+    colors,
+    baseColor: base,
+    accentColor: accent,
+  };
+}
+function parseTimeString(timeStr: string): Date {
+  if (timeStr.includes("Q")) {
+    const [year, quarter] = timeStr.split("-Q");
+    const month = (parseInt(quarter) - 1) * 3;
+    return new Date(parseInt(year), month);
+  }
+  if (timeStr.length === 7) {
+    // YYYY-MM
+    return new Date(timeStr + "-01");
+  }
+  return new Date(timeStr); // YYYY
+}
+
+function formatValue(value: number, unit: string) {
+  const formatter = new Intl.NumberFormat("en-US", {
+    maximumFractionDigits: 2,
+    minimumFractionDigits: unit === "percent" ? 1 : 0,
+    notation: "compact",
+  });
+
+  switch (unit) {
+    case "percent":
+      return `${formatter.format(value)}%`;
+    case "index":
+      return formatter.format(value);
+    case "count":
+      return formatter.format(value);
+    case "tonnes p/c":
+      return `${formatter.format(value)} t/capita`;
+    case "eur":
+      return `€${formatter.format(value)}`;
+    case "tonnes":
+      return `${formatter.format(value)} t`;
+    default:
+      return formatter.format(value);
+  }
+}
+
+function formatTimeLabel(time: string) {
+  // Handle different time formats (YYYY-Q#, YYYY-MM, YYYY)
+  if (time.includes("Q")) {
+    const [year, quarter] = time.split("-Q");
+    return `Q${quarter} ${year}`;
+  }
+  if (time.length === 7) {
+    // YYYY-MM
+    return new Date(time + "-01").toLocaleDateString("en-US", {
+      month: "short",
+      year: "numeric",
+    });
+  }
+  return time; // YYYY
 }
