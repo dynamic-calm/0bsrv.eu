@@ -92,7 +92,7 @@ export default function EurostatMapChart({ data, unit }: Props) {
 
     // Create map
     const mapPlot = Plot.plot({
-      projection: ({ width, height }) => {
+      projection: ({ height }) => {
         return (
           d3
             .geoConicConformal()
@@ -189,7 +189,7 @@ export default function EurostatMapChart({ data, unit }: Props) {
       mapPlot.remove();
       timelinePlot.remove();
     };
-  }, [data, selectedTimeIndex]);
+  }, [data, selectedTimeIndex, min, max, unit]);
 
   return (
     <div className="flex h-full w-full flex-col">
@@ -199,7 +199,7 @@ export default function EurostatMapChart({ data, unit }: Props) {
       />
       <div
         ref={timelineRef}
-        className="flex w-full items-start justify-start mt-8"
+        className="mt-8 flex w-full items-start justify-start"
       />
       <div className="flex w-full items-center justify-center px-2 pb-1">
         <Slider.Root
