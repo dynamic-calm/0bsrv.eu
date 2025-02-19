@@ -197,11 +197,11 @@ export default function EurostatMapChart({ data, unit }: Props) {
     <div className="flex h-full w-full flex-col gap-4">
       <div
         ref={mapRef}
-        className="flex h-full w-full items-start justify-start pl-2"
+        className="flex h-full w-full cursor-crosshair items-start justify-start pl-2"
       />
       <div
         ref={timelineRef}
-        className="flex w-full items-start justify-start"
+        className="flex w-full cursor-pointer items-start justify-start"
       />
     </div>
   );

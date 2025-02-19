@@ -12,7 +12,7 @@ export default function Home() {
       {/* <Suspense fallback={<HeaderFallback />}>
         <Header />
       </Suspense> */}
-      <div className="grid grid-cols-2 gap-2 xl:grid-cols-3 3xl:grid-cols-4">
+      <div className="grid grid-cols-1 gap-2 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5">
         <Title>Economic Indicators</Title>
         {config.economy.map((data) => (
           <Suspense key={data.dataSetCode} fallback={<ChartLoader {...data} />}>
