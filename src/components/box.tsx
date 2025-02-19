@@ -1,11 +1,11 @@
 import Link from "next/link";
+import { ExternalLink } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { ExternalLink } from "lucide-react";
 
 export function Box({
   children,
@@ -20,11 +20,11 @@ export function Box({
 }) {
   return (
     <div className="w-full rounded-sm border border-gray-600 font-mono text-xs">
-      <div className="relative flex h-10 w-full items-center justify-center border-b border-gray-600">
+      <div className="relative flex h-10 w-full items-center justify-start border-b border-gray-600 pl-2">
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger>
-              <span className="block cursor-help font-sans text-sm font-semibold">
+              <span className="block cursor-help font-sans text-lg font-bold tracking-tight">
                 {label}
               </span>
             </TooltipTrigger>
@@ -42,7 +42,7 @@ export function Box({
           <ExternalLink className="mt-[0.1rem] size-[0.63rem] text-gray-700 transition-colors duration-150 group-hover:text-gray-1200 group-hover:underline" />
         </Link>
       </div>
-      <div className="flex h-52 w-full items-center justify-center md:h-72">
+      <div className="flex h-fit min-h-96 w-full items-center justify-center md:h-fit">
         {children}
       </div>
     </div>

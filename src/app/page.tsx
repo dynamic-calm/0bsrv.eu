@@ -1,20 +1,18 @@
-import MyLineChart from "@/components/line-chart";
 import { Suspense } from "react";
 import { ChartLoader } from "@/components/chart-loader";
 import { Box } from "@/components/box";
 import { Title } from "@/components/title";
-import { Header } from "@/components/header";
-import { HeaderFallback } from "@/components/header-fallback";
 import { getData } from "@/lib/eurostat";
 import { config, type DataSet } from "@/lib/config";
+import EurostatMapChart from "@/components/map";
 
 export default function Home() {
   return (
     <main className="mx-auto min-h-screen bg-gray-100 px-2 pb-2">
-      <Suspense fallback={<HeaderFallback />}>
+      {/* <Suspense fallback={<HeaderFallback />}>
         <Header />
-      </Suspense>
-      <div className="grid grid-cols-1 gap-2 xl:grid-cols-2 3xl:grid-cols-3">
+      </Suspense> */}
+      <div className="grid grid-cols-1 gap-2 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
         <Title>Economic Indicators</Title>
         {config.economy.map((data) => (
           <Suspense key={data.dataSetCode} fallback={<ChartLoader {...data} />}>
@@ -68,14 +66,13 @@ async function Chart({
   euKey,
   label,
   unit,
-  hideEu,
   debug,
   description,
 }: DataSet) {
   const data = await getData({ dataSetCode, params, euKey, debug });
   return (
     <Box label={label} dataSetCode={dataSetCode} description={description}>
-      <MyLineChart data={data} xAxisKey="time" unit={unit} hideEu={hideEu} />
+      <EurostatMapChart data={data} unit={unit} />
     </Box>
   );
 }
