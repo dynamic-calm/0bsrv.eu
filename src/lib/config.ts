@@ -271,6 +271,29 @@ export const config: Config = {
       unit: "tonnes",
       hideEu: true,
     },
+    {
+      label: "Energy efficiency",
+      description: "Ennergy efficiency (million tonnes of oil equivalent)",
+      dataSetCode: "nrg_ind_eff",
+      params: {
+        unit: "MTOE",
+        nrg_bal: "PEC_EED",
+      },
+      euKey: "european union - 27 countries (from 2020)",
+      unit: "tonnes",
+      hideEu: true,
+    },
+    {
+      label: "Environmental tax revenues",
+      description: "Environmental tax revenues (percentage of GDP)",
+      dataSetCode: "env_ac_tax",
+      params: {
+        unit: "PC_GDP",
+        tax: "ENV",
+      },
+      euKey: "european union - 27 countries (from 2020)",
+      unit: "percent",
+    },
   ],
 
   criminal: [

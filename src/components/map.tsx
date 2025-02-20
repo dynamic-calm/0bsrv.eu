@@ -112,7 +112,7 @@ export default function EurostatMapChart({ data, unit, max, min }: Props) {
         Plot.line(timelineData, {
           x: "time",
           y: "average",
-          stroke: "var(--color-gray-900)",
+          stroke: "var(--color-gray-700)",
         }),
         Plot.dot(timelineData, {
           x: "time",
@@ -120,7 +120,7 @@ export default function EurostatMapChart({ data, unit, max, min }: Props) {
           fill: (d) =>
             d.index === selectedTimeIndex
               ? "var(--color-gray-1200)"
-              : "var(--color-gray-400)",
+              : "var(--color-gray-800)",
           r: (d) => (d.index === selectedTimeIndex ? 6 : 4),
         }),
         Plot.text(timelineData, {
