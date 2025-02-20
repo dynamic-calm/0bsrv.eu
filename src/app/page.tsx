@@ -63,6 +63,15 @@ export default function Home() {
             <Chart {...data} />
           </Suspense>
         ))}
+        <Title>Health Data</Title>
+        {config.health.map((data) => (
+          <Suspense
+            key={data.dataSetCode.concat(data.label)}
+            fallback={<ChartLoader {...data} />}
+          >
+            <Chart {...data} />
+          </Suspense>
+        ))}
       </div>
     </main>
   );

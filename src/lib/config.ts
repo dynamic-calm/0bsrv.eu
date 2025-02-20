@@ -4,7 +4,8 @@ type Section =
   | "qualityOfLife"
   | "environment"
   | "criminal"
-  | "immigration";
+  | "immigration"
+  | "health";
 
 type Config = Record<Section, DataSet[]>;
 
@@ -324,6 +325,7 @@ export const config: Config = {
       unit: "count",
     },
   ],
+
   immigration: [
     {
       label: "Found illegally present",
@@ -369,6 +371,58 @@ export const config: Config = {
       params: {
         unit: "NR",
         effect: "RE_L_ORD",
+      },
+      euKey: "european union - 27 countries (from 2020)",
+      unit: "count",
+    },
+    {
+      label: "Long-term residence permits",
+      description: "Long-term residence permits issued during the year",
+      dataSetCode: "migr_resltr",
+      params: {
+        unit: "PER",
+      },
+      euKey: "european union - 27 countries (from 2020)",
+      unit: "count",
+    },
+    {
+      label: "Temporary protection",
+      description: "Decisions granting temporary protection",
+      dataSetCode: "migr_asytpfa",
+      params: {
+        unit: "PER",
+        citizen: "EU27_2020",
+        sex: "T",
+        age: "TOTAL",
+      },
+      euKey: "european union - 27 countries (from 2020)",
+      unit: "count",
+    },
+  ],
+
+  health: [
+    {
+      label: "Fatal accidents at work",
+      description: "Fatal accidents at work per year oer country",
+      dataSetCode: "hsw_mi01",
+      params: {
+        unit: "NR",
+        age: "TOTAL",
+        sex: "T",
+        severity: "FAT",
+      },
+      euKey: "european union - 27 countries (from 2020)",
+      unit: "count",
+    },
+    {
+      label: "Infant mortality",
+      description: "Infant mortality by country of residence",
+      dataSetCode: "hlth_cd_ainfr",
+      params: {
+        unit: "NR",
+        age: "TOTAL",
+        icd10: "A-R_V-Y",
+        resid: "TOT_RESID",
       },
       euKey: "european union - 27 countries (from 2020)",
       unit: "count",
