@@ -134,6 +134,8 @@ export default function EurostatMapChart({ data, unit, max, min }: Props) {
 
       y: {
         tickFormat: (d) => formatValue(d, unit),
+        label: "",
+        labelArrow: "none",
       },
       grid: true,
     });
