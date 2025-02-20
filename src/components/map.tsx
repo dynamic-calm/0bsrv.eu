@@ -67,26 +67,42 @@ export default function EurostatMapChart({ data, unit }: Props) {
 
   const max = Math.max(...set);
   const min = Math.min(...set);
+  const { scale: colorScale, colors } = createColorScale(min, max);
+
+  const valueMap = new Map();
+  const timePoint = data[selectedTimeIndex];
+
+  Object.entries(countryNameToISO).forEach(([countryName, isoCode]) => {
+    const value = timePoint[countryName];
+    if (typeof value === "number" && !isNaN(value)) {
+      valueMap.set(isoCode, value);
+    }
+  });
+
+  // Prepare timeline data
+  const timelineData = data.map((d, index) => {
+    let average = d["eu"];
+
+    if (!average) {
+      const countryValues = Object.entries(countryNameToISO)
+        .map(([country]) => d[country])
+        .filter((val): val is number => typeof val === "number" && !isNaN(val));
+      average =
+        countryValues.reduce((sum, val) => sum + val, 0) / countryValues.length;
+    }
+
+    return {
+      index,
+      time: parseTimeString(d.time),
+      timeLabel: d.time,
+      average,
+    };
+  });
 
   useEffect(() => {
     if (!data || !mapRef.current || !timelineRef.current) return;
-
     if (mapRef.current.firstChild) mapRef.current.firstChild.remove();
     if (timelineRef.current.firstChild) timelineRef.current.firstChild.remove();
-
-    const timePoint = data[selectedTimeIndex];
-    const validValues: number[] = [];
-    const valueMap = new Map();
-
-    Object.entries(countryNameToISO).forEach(([countryName, isoCode]) => {
-      const value = timePoint[countryName];
-      if (typeof value === "number" && !isNaN(value)) {
-        valueMap.set(isoCode, value);
-        validValues.push(value);
-      }
-    });
-
-    const { scale: colorScale, colors } = createColorScale(min, max);
 
     // Create map
     const mapPlot = Plot.plot({
@@ -128,22 +144,6 @@ export default function EurostatMapChart({ data, unit }: Props) {
       ],
     });
 
-    // Prepare timeline data
-    const timelineData = data.map((d, index) => {
-      const countryValues = Object.entries(countryNameToISO)
-        .map(([country]) => d[country])
-        .filter((val): val is number => typeof val === "number" && !isNaN(val));
-
-      return {
-        index,
-        time: parseTimeString(d.time),
-        timeLabel: d.time,
-        average:
-          countryValues.reduce((sum, val) => sum + val, 0) /
-          countryValues.length,
-      };
-    });
-
     // Create timeline
     const timelinePlot = Plot.plot({
       height: 100,
@@ -183,7 +183,7 @@ export default function EurostatMapChart({ data, unit }: Props) {
       mapPlot.remove();
       timelinePlot.remove();
     };
-  }, [data, selectedTimeIndex, min, max, unit]);
+  }, [data, selectedTimeIndex, min, max, unit, valueMap]);
 
   return (
     <div className="flex h-full w-full flex-col">
@@ -248,22 +248,7 @@ function formatValue(value: number, unit: string, opts?: { floor?: boolean }) {
     value = Math.floor(value);
   }
 
-  switch (unit) {
-    case "percent":
-      return `${formatter.format(value)}%`;
-    case "index":
-      return formatter.format(value);
-    case "count":
-      return formatter.format(value);
-    case "tonnes p/c":
-      return `${formatter.format(value)} t/capita`;
-    case "eur":
-      return `€${formatter.format(value)}`;
-    case "tonnes":
-      return `${formatter.format(value)} t`;
-    default:
-      return formatter.format(value);
-  }
+  return formatter.format(value);
 }
 
 function formatTimeLabel(time?: string) {
