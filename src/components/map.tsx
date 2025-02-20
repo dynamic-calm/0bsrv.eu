@@ -5,41 +5,7 @@ import * as Plot from "@observablehq/plot";
 import * as Slider from "@radix-ui/react-slider";
 import europeGeoJSON from "@/geojson/europe.geojson";
 import * as d3 from "d3";
-
-export const countryNameToISO: Record<string, string> = {
-  belgium: "BE",
-  bulgaria: "BG",
-  czechia: "CZ",
-  denmark: "DK",
-  germany: "DE",
-  estonia: "EE",
-  ireland: "IE",
-  greece: "EL",
-  spain: "ES",
-  france: "FR",
-  croatia: "HR",
-  italy: "IT",
-  cyprus: "CY",
-  latvia: "LV",
-  lithuania: "LT",
-  luxembourg: "LU",
-  hungary: "HU",
-  malta: "MT",
-  netherlands: "NL",
-  austria: "AT",
-  poland: "PL",
-  portugal: "PT",
-  romania: "RO",
-  slovenia: "SI",
-  slovakia: "SK",
-  finland: "FI",
-  sweden: "SE",
-  iceland: "IS",
-  norway: "NO",
-  switzerland: "CH",
-  "united kingdom": "GB",
-  türkiye: "TR",
-};
+import { countryNameToISO } from "@/lib/config";
 
 const LEGEND_STEPS = 5;
 
@@ -146,7 +112,7 @@ export default function EurostatMapChart({ data, unit, max, min }: Props) {
         Plot.line(timelineData, {
           x: "time",
           y: "average",
-          stroke: "var(--color-gray-1000)",
+          stroke: "var(--color-gray-600)",
         }),
         Plot.dot(timelineData, {
           x: "time",
@@ -154,7 +120,7 @@ export default function EurostatMapChart({ data, unit, max, min }: Props) {
           fill: (d) =>
             d.index === selectedTimeIndex
               ? "var(--color-gray-1200)"
-              : "var(--color-gray-600)",
+              : "var(--color-gray-400)",
           r: (d) => (d.index === selectedTimeIndex ? 6 : 4),
         }),
         Plot.text(timelineData, {
@@ -165,6 +131,10 @@ export default function EurostatMapChart({ data, unit, max, min }: Props) {
           dy: -10,
         }),
       ],
+
+      y: {
+        tickFormat: (d) => formatValue(d, unit),
+      },
       grid: true,
     });
 
