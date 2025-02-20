@@ -85,8 +85,16 @@ async function Chart({
   unit,
   debug,
   description,
+  makePercent,
 }: DataSet) {
-  const data = await getData({ dataSetCode, params, euKey, debug });
+  const data = await getData({
+    dataSetCode,
+    params,
+    euKey,
+    debug,
+    makePercent,
+  });
+
   const set = new Set(
     data.flatMap((d) =>
       Object.keys(countryNameToISO)

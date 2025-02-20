@@ -11,7 +11,6 @@ export function Title({
     <div
       className={cn(
         "col-span-full mb-3 mt-32 text-4xl font-bold tracking-tighter xl:text-5xl xl:tracking-[-0.225rem]",
-
         className,
       )}
     >

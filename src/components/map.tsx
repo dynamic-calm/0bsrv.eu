@@ -237,12 +237,12 @@ function formatTimeLabel(time?: string) {
 }
 
 function parseTimeString(timeStr: string): Date {
-  if (timeStr.includes("Q")) {
+  if (timeStr?.includes("Q")) {
     const [year, quarter] = timeStr.split("-Q");
     const month = (parseInt(quarter) - 1) * 3;
     return new Date(parseInt(year), month);
   }
-  if (timeStr.length === 4) {
+  if (timeStr?.length === 4) {
     return new Date(parseInt(timeStr), 0);
   }
   return new Date(timeStr + "-01");

@@ -18,6 +18,7 @@ export type DataSet = {
   unit: "percent" | "index" | "count" | "tonnes p/c" | "eur" | "tonnes";
   hideEu?: boolean;
   debug?: boolean;
+  makePercent?: boolean;
 };
 
 export const config: Config = {
@@ -33,6 +34,7 @@ export const config: Config = {
       euKey:
         "european union (eu6-1958, eu9-1973, eu10-1981, eu12-1986, eu15-1995, eu25-2004, eu27-2007, eu28-2013, eu27-2020)",
       unit: "percent",
+      makePercent: true,
     },
     {
       label: "GDP Growth",

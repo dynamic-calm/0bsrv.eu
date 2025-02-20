@@ -14,9 +14,16 @@ type GetData = {
   params: Record<string, string>;
   euKey: string;
   debug?: boolean;
+  makePercent?: boolean;
 };
 
-export async function getData({ dataSetCode, params, euKey, debug }: GetData) {
+export async function getData({
+  dataSetCode,
+  params,
+  euKey,
+  debug,
+  makePercent,
+}: GetData) {
   const url = `${HOST}/${dataSetCode}?${new URLSearchParams(params).toString()}`;
   const jst = await JSONstat(url);
   const timeIds = jst.Dataset(0).Dimension("time").id;
@@ -26,7 +33,7 @@ export async function getData({ dataSetCode, params, euKey, debug }: GetData) {
     .map((result: Result) => ({
       ...result,
       [result.geo.toLowerCase() === euKey ? "eu" : result.geo.toLowerCase()]:
-        result.value,
+        makePercent ? result.value / 100 : result.value,
     }))
     .sort((a: { time: string }, b: { time: string }) =>
       a.time.localeCompare(b.time),
