@@ -6,7 +6,7 @@ import * as Slider from "@radix-ui/react-slider";
 import europeGeoJSON from "@/geojson/europe.geojson";
 import * as d3 from "d3";
 
-const countryNameToISO: Record<string, string> = {
+export const countryNameToISO: Record<string, string> = {
   belgium: "BE",
   bulgaria: "BG",
   czechia: "CZ",
@@ -51,22 +51,14 @@ interface EurostatData {
 interface Props {
   data: EurostatData[];
   unit: string;
+  max: number;
+  min: number;
 }
 
-export default function EurostatMapChart({ data, unit }: Props) {
+export default function EurostatMapChart({ data, unit, max, min }: Props) {
   const mapRef = useRef<HTMLDivElement>(null);
   const timelineRef = useRef<HTMLDivElement>(null);
-  const [selectedTimeIndex, setSelectedTimeIndex] = useState(data?.length - 1);
-  const set = new Set(
-    data.flatMap((d) =>
-      Object.keys(countryNameToISO)
-        .map((c) => d[c])
-        .filter((c): c is number => typeof c === "number"),
-    ),
-  );
-
-  const max = Math.max(...set);
-  const min = Math.min(...set);
+  const [selectedTimeIndex, setSelectedTimeIndex] = useState(data.length - 1);
   const { scale: colorScale, colors } = createColorScale(min, max);
 
   const valueMap = new Map();
