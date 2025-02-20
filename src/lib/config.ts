@@ -1,10 +1,12 @@
-type Config = {
-  economy: DataSet[];
-  demography: DataSet[];
-  qualityOfLife: DataSet[];
-  environment: DataSet[];
-  criminal: DataSet[];
-};
+type Section =
+  | "economy"
+  | "demography"
+  | "qualityOfLife"
+  | "environment"
+  | "criminal"
+  | "immigration";
+
+type Config = Record<Section, DataSet[]>;
 
 export type DataSet = {
   label: string;
@@ -273,7 +275,8 @@ export const config: Config = {
   criminal: [
     {
       label: "Intentional Homicide",
-      description: "Police-recorded intentional homicides per hundred thousand inhabitants",
+      description:
+        "Police-recorded intentional homicides per hundred thousand inhabitants",
       dataSetCode: "crim_off_cat",
       params: {
         unit: "P_HTHAB",
@@ -285,7 +288,8 @@ export const config: Config = {
     },
     {
       label: "Kidnapping",
-      description: "Police-recorded kidnappings per hundred thousand inhabitants",
+      description:
+        "Police-recorded kidnappings per hundred thousand inhabitants",
       dataSetCode: "crim_off_cat",
       params: {
         unit: "P_HTHAB",
@@ -317,6 +321,56 @@ export const config: Config = {
       },
       euKey: "european union - 27 countries (from 2020)",
       hideEu: true,
+      unit: "count",
+    },
+  ],
+  immigration: [
+    {
+      label: "Found illegally present",
+      description:
+        "Persons subject to immigration law enforcement - per thousand persons",
+      dataSetCode: "migr_eilpop",
+      params: {
+        unit: "NR",
+        effect: "PRES_NLEG",
+      },
+      euKey: "european union - 27 countries (from 2020)",
+      unit: "count",
+    },
+    {
+      label: "Refused entry",
+      description:
+        "Persons subject to immigration law enforcement - per thousand persons",
+      dataSetCode: "migr_eilpop",
+      params: {
+        unit: "NR",
+        effect: "ENTRY_REF",
+      },
+      euKey: "european union - 27 countries (from 2020)",
+      unit: "count",
+    },
+    {
+      label: "Ordered to leave",
+      description:
+        "Persons subject to immigration law enforcement - per thousand persons",
+      dataSetCode: "migr_eilpop",
+      params: {
+        unit: "NR",
+        effect: "L_ORD",
+      },
+      euKey: "european union - 27 countries (from 2020)",
+      unit: "count",
+    },
+    {
+      label: "Returned",
+      description:
+        "Persons subject to immigration law enforcement - per thousand persons",
+      dataSetCode: "migr_eilpop",
+      params: {
+        unit: "NR",
+        effect: "RE_L_ORD",
+      },
+      euKey: "european union - 27 countries (from 2020)",
       unit: "count",
     },
   ],

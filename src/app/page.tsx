@@ -54,6 +54,15 @@ export default function Home() {
             <Chart {...data} />
           </Suspense>
         ))}
+        <Title>Immigration Data</Title>
+        {config.immigration.map((data) => (
+          <Suspense
+            key={data.dataSetCode.concat(data.label)}
+            fallback={<ChartLoader {...data} />}
+          >
+            <Chart {...data} />
+          </Suspense>
+        ))}
       </div>
     </main>
   );
