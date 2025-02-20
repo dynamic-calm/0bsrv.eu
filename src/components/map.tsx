@@ -112,7 +112,7 @@ export default function EurostatMapChart({ data, unit, max, min }: Props) {
         Plot.line(timelineData, {
           x: "time",
           y: "average",
-          stroke: "var(--color-gray-600)",
+          stroke: "var(--color-gray-900)",
         }),
         Plot.dot(timelineData, {
           x: "time",
