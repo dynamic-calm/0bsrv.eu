@@ -4,7 +4,7 @@ export default function Footer() {
   return (
     <footer className="flex w-full items-center justify-center border-t border-gray-700 bg-gray-200 px-2 py-2 font-mono text-xs text-gray-900 h-12">
       <Link
-        href="https://github.com/mateopresacastro/0bsrv.eu"
+        href="https://github.com/dynamic-calm/0bsrv.eu"
         className="w-fit"
         target="_blank"
       >
