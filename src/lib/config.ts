@@ -64,6 +64,21 @@ export const config: Config = {
       unit: "percent",
     },
     {
+      label: "Income",
+      description: "Median yearly gross income",
+      dataSetCode: "ilc_di03",
+      params: {
+        age: "Y18-64",
+        unit: "EUR",
+        sex: "T",
+        indic_il: "MED_E",
+        startPeriod: "2004-Q1",
+        endPeriod: "2026-Q1",
+      },
+      euKey: "european union - 27 countries (from 2020)",
+      unit: "eur",
+    },
+    {
       label: "Unemployment",
       description: "Unemployment rate (percentage of population)",
       dataSetCode: "une_rt_m",
@@ -211,22 +226,6 @@ export const config: Config = {
       },
       euKey: "european union - 27 countries (from 2020)",
       unit: "percent",
-    },
-
-    {
-      label: "Income",
-      description: "Median yearly gross income",
-      dataSetCode: "ilc_di03",
-      params: {
-        age: "Y18-64",
-        unit: "EUR",
-        sex: "T",
-        indic_il: "MED_E",
-        startPeriod: "2004-Q1",
-        endPeriod: "2026-Q1",
-      },
-      euKey: "european union - 27 countries (from 2020)",
-      unit: "eur",
     },
   ],
 
