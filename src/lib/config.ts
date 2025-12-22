@@ -41,7 +41,23 @@ export const config: Config = {
         s_adj: "SCA",
         na_item: "B1GQ",
         startPeriod: "2009-Q1",
-        endPeriod: "2024-Q3",
+        endPeriod: "2027-Q1",
+      },
+      euKey:
+        "euro area (ea11-1999, ea12-2001, ea13-2007, ea15-2008, ea16-2009, ea17-2011, ea18-2014, ea19-2015, ea20-2023)",
+      unit: "percent",
+    },
+    {
+      label: "Compensation of Employees",
+      dataSetCode: "namq_10_gdp",
+      description:
+        "Compensation of employees as percentage of GDP (labor share)",
+      params: {
+        unit: "PC_GDP",
+        s_adj: "SCA",
+        na_item: "D1",
+        startPeriod: "1995-Q1",
+        endPeriod: "2027-Q1",
       },
       euKey:
         "euro area (ea11-1999, ea12-2001, ea13-2007, ea15-2008, ea16-2009, ea17-2011, ea18-2014, ea19-2015, ea20-2023)",
@@ -71,7 +87,7 @@ export const config: Config = {
         sex: "T",
         age: "Y15-29",
         startPeriod: "2009-Q1",
-        endPeriod: "2024-Q3",
+        endPeriod: "2027-Q1",
       },
       euKey: "european union - 27 countries (from 2020)",
       unit: "percent",
@@ -98,7 +114,7 @@ export const config: Config = {
         indic: "BS-ESI-I",
         s_adj: "SA",
         startPeriod: "2007-Q1",
-        endPeriod: "2024-Q3",
+        endPeriod: "2027-Q1",
       },
       euKey: "european union - 27 countries (from 2020)",
       unit: "index",
@@ -112,7 +128,7 @@ export const config: Config = {
         unit: "PC_GDP",
         sectperf: "TOTAL",
         startPeriod: "1995-Q1",
-        endPeriod: "2025-Q1",
+        endPeriod: "2027-Q1",
       },
       euKey: "european union - 27 countries (from 2020)",
       unit: "percent",
@@ -207,7 +223,7 @@ export const config: Config = {
         sex: "T",
         indic_il: "MED_E",
         startPeriod: "2004-Q1",
-        endPeriod: "2024-Q4",
+        endPeriod: "2026-Q1",
       },
       euKey: "european union - 27 countries (from 2020)",
       unit: "eur",
@@ -273,7 +289,8 @@ export const config: Config = {
   criminal: [
     {
       label: "Intentional Homicide",
-      description: "Police-recorded intentional homicides per hundred thousand inhabitants",
+      description:
+        "Police-recorded intentional homicides per hundred thousand inhabitants",
       dataSetCode: "crim_off_cat",
       params: {
         unit: "P_HTHAB",
@@ -285,7 +302,8 @@ export const config: Config = {
     },
     {
       label: "Kidnapping",
-      description: "Police-recorded kidnappings per hundred thousand inhabitants",
+      description:
+        "Police-recorded kidnappings per hundred thousand inhabitants",
       dataSetCode: "crim_off_cat",
       params: {
         unit: "P_HTHAB",
