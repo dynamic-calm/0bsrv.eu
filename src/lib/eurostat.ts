@@ -18,8 +18,10 @@ type GetData = {
 
 export async function getData({ dataSetCode, params, euKey, debug }: GetData) {
   const url = `${HOST}/${dataSetCode}?${new URLSearchParams(params).toString()}`;
+  if (debug) console.log({ url });
   const jst = await JSONstat(url);
   const timeIds = jst.Dataset(0).Dimension("time").id;
+  if (debug) console.log(jst);
   const data = jst
     .Dataset(0)
     .toTable({ type: "arrobj" })

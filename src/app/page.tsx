@@ -17,14 +17,17 @@ export default function Home() {
       <div className="grid grid-cols-1 gap-2 xl:grid-cols-2 3xl:grid-cols-3">
         <Title>Economic Indicators</Title>
         {config.economy.map((data) => (
-          <Suspense key={data.dataSetCode} fallback={<ChartLoader {...data} />}>
+          <Suspense
+            key={data.dataSetCode.concat(data.label).concat(data.description)}
+            fallback={<ChartLoader {...data} />}
+          >
             <Chart {...data} />
           </Suspense>
         ))}
         <Title>Demographic Data</Title>
         {config.demography.map((data) => (
           <Suspense
-            key={data.dataSetCode.concat(data.label)}
+            key={data.dataSetCode.concat(data.label).concat(data.description)}
             fallback={<ChartLoader {...data} />}
           >
             <Chart {...data} />
@@ -33,7 +36,7 @@ export default function Home() {
         <Title>Quality of Living</Title>
         {config.qualityOfLife.map((data) => (
           <Suspense
-            key={data.dataSetCode.concat(data.label)}
+            key={data.dataSetCode.concat(data.label).concat(data.description)}
             fallback={<ChartLoader {...data} />}
           >
             <Chart {...data} />
@@ -42,7 +45,7 @@ export default function Home() {
         <Title>Environmental Data</Title>
         {config.environment.map((data) => (
           <Suspense
-            key={data.dataSetCode.concat(data.label)}
+            key={data.dataSetCode.concat(data.label).concat(data.description)}
             fallback={<ChartLoader {...data} />}
           >
             <Chart {...data} />
@@ -51,7 +54,7 @@ export default function Home() {
         <Title>Criminal Data</Title>
         {config.criminal.map((data) => (
           <Suspense
-            key={data.dataSetCode.concat(data.label)}
+            key={data.dataSetCode.concat(data.label).concat(data.description)}
             fallback={<ChartLoader {...data} />}
           >
             <Chart {...data} />
